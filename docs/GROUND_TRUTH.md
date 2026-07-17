@@ -151,3 +151,51 @@ No product code has been written.
   `suretyOddsValidationInput` are functions. **Registry consumption is verified.**
 - The earlier 404 for `@surety/txline-verify` was a package-name mismatch, not a
   missing publication. BROKER must use the real `@surety-tx` scope everywhere.
+- Gate 2 initialized native-USDC formula-v2 vault
+  `6BaUXkDZAEmdwGHf1B8KNRUqqYvpTbKmzLdKCrH4eGrp` under the same deployed program.
+  Its reserve is `EgwE41BznuyVGtboQb5uBHsPdbabBzjzhyWYr3VRYC5J`; live parsed-account
+  verification confirms native devnet USDC mint
+  `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU` and vault-PDA ownership. This
+  replaces the incompatible `FiJfrn...bpck` FRA–ENG vault as BROKER's policy target.
+
+## Gate 3 issuance mechanism (from the pinned SURETY source)
+
+Read in this session from the pinned SURETY commit
+`a2f205c9efe90543bb5a867422c105f9f1832ed4`:
+`programs/surety_core/src/lib.rs`, `scripts/setup-validated-market.ts`,
+`services/odds-validation/src/{sync,live,record}.ts`,
+`services/feed-ingest/src/auth.ts`, `app/lib/{config,pda}.ts`.
+
+- `issue_policy_with_validated_odds` reads two pre-existing on-chain PDAs —
+  `ValidatedOdds` (seed `validated_odds` + 16-byte message key) and
+  `ValidatedFixture` (seed `validated_fixture` + fixture id). These are created
+  by `record_validated_odds` / `record_validated_fixture`, which CPI into the
+  TxLINE program `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J` to verify the
+  proof against the on-chain `daily_batch_roots` / `ten_daily_fixtures_roots`.
+- The instruction is fully self-checking; BROKER cannot invent terms. On-chain,
+  `validate_verified_quote` re-derives everything: the predicate must be a fixed
+  17-byte canonical layout `[1,1,2, fixture_id(8 LE), 0,0, outcome_index, 0,0,0]`;
+  the bucket hash must equal `sha256("match:{fixture_id}:{outcome}")`; the premium
+  is computed deterministically from `validated_odds.prices` + vault state
+  (`validated_quote_terms`) and must match `args.premium`; and `args.quote_hash`
+  must equal a `sha256` over domain `SURETY_TXLINE_ODDS_QUOTE_V2`, the vault /
+  fixture / odds keys, both receipt hashes, predicate hash, bucket hash, coverage,
+  premium, and probability. BROKER computes these from the values it reads back
+  off the on-chain validated accounts — matching the contract, not reimplementing
+  proprietary logic.
+- Freshness: `MAX_ODDS_AGE_MS = 15 * 60 * 1000` and
+  `MAX_ODDS_FUTURE_SKEW_MS = 30 * 1000`. The validated odds timestamp must be
+  within 15 minutes of the issuance clock, so issuance needs a **freshly fetched**
+  odds packet, not a stored recording.
+- Fresh odds come from the TxLINE API (`https://txline-dev.txodds.com`) via
+  SURETY's `live.ts`, which needs a guest JWT (public) **and** an `X-Api-Token`
+  secret (`TXLINE_API_TOKEN` / `.secrets/txline-devnet.json`). The secret is not
+  present in this environment — the Gate 3 issuance blocker.
+- `reconcile_reserve` folds any surplus reserve balance into `free_reserves` and
+  `total_capital` at the start of issuance, so the Gate 2 CCTP-minted USDC in the
+  vault reserve becomes underwriting capital automatically.
+- The verification primitive is proven independently of the token:
+  `scripts/gate3-validate-odds.mjs` runs `validateOddsOnDevnet` /
+  `validateFixtureOnDevnet` (read-only `.view()` CPI) against real recorded
+  FRA–ENG proofs — authentic proofs verify, tampered proofs are rejected on-chain
+  (errors 6003 / 6004).

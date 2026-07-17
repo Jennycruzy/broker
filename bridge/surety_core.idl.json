@@ -1,0 +1,3232 @@
+{
+  "address": "3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW",
+  "metadata": {
+    "name": "surety_core",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "SURETY fully collateralized prize indemnity and prop settlement vault"
+  },
+  "instructions": [
+    {
+      "name": "execute_withdrawal",
+      "discriminator": [
+        113,
+        121,
+        203,
+        232,
+        137,
+        139,
+        248,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "withdrawal"
+          ]
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "share_mint",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "withdrawal",
+          "writable": true
+        },
+        {
+          "name": "request_share_account",
+          "writable": true
+        },
+        {
+          "name": "lp_asset_account",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "expire_policy",
+      "discriminator": [
+        149,
+        24,
+        43,
+        100,
+        240,
+        50,
+        39,
+        124
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "bucket",
+            "policy"
+          ]
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "bucket",
+          "writable": true,
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "policy_escrow",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_vault",
+      "discriminator": [
+        48,
+        191,
+        163,
+        44,
+        71,
+        129,
+        63,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "vault_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset_mint"
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "share_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  104,
+                  97,
+                  114,
+                  101,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "vault_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "max_bucket_bps",
+          "type": "u16"
+        },
+        {
+          "name": "epoch_seconds",
+          "type": "i64"
+        },
+        {
+          "name": "margin_bps",
+          "type": "u16"
+        },
+        {
+          "name": "formula_version",
+          "type": "u16"
+        },
+        {
+          "name": "broker_commission_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "issue_policy",
+      "discriminator": [
+        126,
+        159,
+        34,
+        92,
+        118,
+        55,
+        15,
+        196
+      ],
+      "accounts": [
+        {
+          "name": "holder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "holder_asset_account",
+          "writable": true
+        },
+        {
+          "name": "broker_asset_account",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "bucket",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  99,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "args.bucket_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "holder"
+              },
+              {
+                "kind": "arg",
+                "path": "args.predicate_hash"
+              },
+              {
+                "kind": "arg",
+                "path": "args.nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "policy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "IssuePolicyArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "issue_policy_with_validated_odds",
+      "discriminator": [
+        33,
+        2,
+        223,
+        63,
+        69,
+        23,
+        49,
+        44
+      ],
+      "accounts": [
+        {
+          "name": "holder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "holder_asset_account",
+          "writable": true
+        },
+        {
+          "name": "broker_asset_account",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "bucket",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  99,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "args.bucket_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "holder"
+              },
+              {
+                "kind": "arg",
+                "path": "args.predicate_hash"
+              },
+              {
+                "kind": "arg",
+                "path": "args.nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy_escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121,
+                  95,
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "policy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validated_odds",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101,
+                  100,
+                  95,
+                  111,
+                  100,
+                  100,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "validated_odds.message_id_key",
+                "account": "ValidatedOdds"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validated_fixture",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101,
+                  100,
+                  95,
+                  102,
+                  105,
+                  120,
+                  116,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "validated_fixture.fixture_id",
+                "account": "ValidatedFixture"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "IssuePolicyArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "lp_deposit",
+      "discriminator": [
+        27,
+        77,
+        210,
+        69,
+        12,
+        43,
+        148,
+        16
+      ],
+      "accounts": [
+        {
+          "name": "lp",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "share_mint",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "lp_asset_account",
+          "writable": true
+        },
+        {
+          "name": "lp_share_account",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "assets",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "post_attestation",
+      "discriminator": [
+        12,
+        75,
+        255,
+        83,
+        59,
+        171,
+        141,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "attestor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "attestation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "arg",
+                "path": "args.seq"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "PostAttestationArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "record_validated_fixture",
+      "discriminator": [
+        170,
+        76,
+        149,
+        162,
+        154,
+        85,
+        174,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "validated_fixture",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101,
+                  100,
+                  95,
+                  102,
+                  105,
+                  120,
+                  116,
+                  117,
+                  114,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "fixture_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "txline_program",
+          "address": "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J"
+        },
+        {
+          "name": "ten_daily_fixtures_roots"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "fixture_id",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "FixtureValidationInput"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "record_validated_odds",
+      "discriminator": [
+        201,
+        220,
+        127,
+        255,
+        48,
+        144,
+        89,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "validated_odds",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101,
+                  100,
+                  95,
+                  111,
+                  100,
+                  100,
+                  115
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "message_id_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "txline_program",
+          "address": "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J"
+        },
+        {
+          "name": "daily_odds_merkle_roots"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "message_id_key",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "proof",
+          "type": {
+            "defined": {
+              "name": "OddsValidationInput"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "request_withdrawal",
+      "discriminator": [
+        251,
+        85,
+        121,
+        205,
+        56,
+        201,
+        12,
+        177
+      ],
+      "accounts": [
+        {
+          "name": "lp",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "reserve",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "share_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "lp_share_account",
+          "writable": true
+        },
+        {
+          "name": "withdrawal",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  105,
+                  116,
+                  104,
+                  100,
+                  114,
+                  97,
+                  119,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "lp"
+              },
+              {
+                "kind": "arg",
+                "path": "request_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "request_share_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  105,
+                  116,
+                  104,
+                  100,
+                  114,
+                  97,
+                  119,
+                  97,
+                  108,
+                  95,
+                  115,
+                  104,
+                  97,
+                  114,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "withdrawal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "request_id",
+          "type": "u64"
+        },
+        {
+          "name": "shares",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "settle_policy",
+      "discriminator": [
+        180,
+        234,
+        21,
+        174,
+        50,
+        214,
+        91,
+        113
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "bucket",
+            "policy"
+          ]
+        },
+        {
+          "name": "asset_mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "bucket",
+          "writable": true,
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "policy_escrow",
+          "writable": true
+        },
+        {
+          "name": "payout_account",
+          "writable": true
+        },
+        {
+          "name": "txline_program",
+          "address": "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J"
+        },
+        {
+          "name": "daily_scores_merkle_roots"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "payload",
+          "type": {
+            "defined": {
+              "name": "StatValidationInput"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ExposureBucket",
+      "discriminator": [
+        210,
+        25,
+        219,
+        87,
+        97,
+        4,
+        244,
+        65
+      ]
+    },
+    {
+      "name": "Policy",
+      "discriminator": [
+        222,
+        135,
+        7,
+        163,
+        235,
+        177,
+        33,
+        68
+      ]
+    },
+    {
+      "name": "SolvencyAttestation",
+      "discriminator": [
+        42,
+        23,
+        198,
+        111,
+        115,
+        158,
+        250,
+        61
+      ]
+    },
+    {
+      "name": "ValidatedFixture",
+      "discriminator": [
+        184,
+        101,
+        150,
+        63,
+        185,
+        17,
+        201,
+        197
+      ]
+    },
+    {
+      "name": "ValidatedOdds",
+      "discriminator": [
+        193,
+        26,
+        68,
+        95,
+        250,
+        130,
+        40,
+        76
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    },
+    {
+      "name": "WithdrawalRequest",
+      "discriminator": [
+        242,
+        88,
+        147,
+        173,
+        182,
+        62,
+        229,
+        193
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AttestationPosted",
+      "discriminator": [
+        142,
+        97,
+        81,
+        56,
+        69,
+        155,
+        19,
+        243
+      ]
+    },
+    {
+      "name": "BrokerCommissionPaid",
+      "discriminator": [
+        81,
+        255,
+        95,
+        6,
+        69,
+        188,
+        187,
+        110
+      ]
+    },
+    {
+      "name": "FixtureValidated",
+      "discriminator": [
+        233,
+        220,
+        140,
+        119,
+        33,
+        40,
+        105,
+        148
+      ]
+    },
+    {
+      "name": "LpDeposited",
+      "discriminator": [
+        85,
+        211,
+        184,
+        159,
+        176,
+        224,
+        28,
+        72
+      ]
+    },
+    {
+      "name": "OddsValidated",
+      "discriminator": [
+        220,
+        151,
+        160,
+        221,
+        66,
+        132,
+        25,
+        140
+      ]
+    },
+    {
+      "name": "PolicyExpired",
+      "discriminator": [
+        165,
+        34,
+        27,
+        82,
+        79,
+        188,
+        9,
+        244
+      ]
+    },
+    {
+      "name": "PolicyIssued",
+      "discriminator": [
+        27,
+        206,
+        224,
+        78,
+        2,
+        95,
+        231,
+        160
+      ]
+    },
+    {
+      "name": "PolicyIssuedWithValidatedOdds",
+      "discriminator": [
+        200,
+        164,
+        24,
+        79,
+        215,
+        35,
+        118,
+        76
+      ]
+    },
+    {
+      "name": "PolicySettled",
+      "discriminator": [
+        67,
+        45,
+        149,
+        235,
+        199,
+        184,
+        83,
+        77
+      ]
+    },
+    {
+      "name": "VaultInitialized",
+      "discriminator": [
+        180,
+        43,
+        207,
+        2,
+        18,
+        71,
+        3,
+        75
+      ]
+    },
+    {
+      "name": "WithdrawalExecuted",
+      "discriminator": [
+        37,
+        78,
+        199,
+        192,
+        51,
+        68,
+        173,
+        162
+      ]
+    },
+    {
+      "name": "WithdrawalRequested",
+      "discriminator": [
+        75,
+        207,
+        21,
+        12,
+        160,
+        102,
+        150,
+        55
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ZeroAmount",
+      "msg": "amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "ZeroCoverage",
+      "msg": "coverage must be greater than zero"
+    },
+    {
+      "code": 6002,
+      "name": "ZeroPremium",
+      "msg": "premium must be greater than zero"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidBucketCap",
+      "msg": "bucket cap must be between 1 and 10,000 basis points"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidEpoch",
+      "msg": "withdrawal epoch must be greater than zero"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidMargin",
+      "msg": "margin must be at least 10,000 basis points"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidFormulaVersion",
+      "msg": "formula version must be non-zero"
+    },
+    {
+      "code": 6007,
+      "name": "MathOverflow",
+      "msg": "arithmetic overflow"
+    },
+    {
+      "code": 6008,
+      "name": "MathUnderflow",
+      "msg": "arithmetic underflow"
+    },
+    {
+      "code": 6009,
+      "name": "SolvencyInvariantViolation",
+      "msg": "vault accounting invariant failed"
+    },
+    {
+      "code": 6010,
+      "name": "ReserveBalanceMismatch",
+      "msg": "reserve token balance does not match free-reserve accounting"
+    },
+    {
+      "code": 6011,
+      "name": "DepositTooSmall",
+      "msg": "deposit is too small to mint one share"
+    },
+    {
+      "code": 6012,
+      "name": "WithdrawalTooSmall",
+      "msg": "withdrawal is too small to return one asset unit"
+    },
+    {
+      "code": 6013,
+      "name": "WithdrawalNotPending",
+      "msg": "withdrawal request is not pending"
+    },
+    {
+      "code": 6014,
+      "name": "EpochNotReached",
+      "msg": "withdrawal epoch has not been reached"
+    },
+    {
+      "code": 6015,
+      "name": "InsufficientFreeReserves",
+      "msg": "vault does not have enough free reserves"
+    },
+    {
+      "code": 6016,
+      "name": "EmptyVault",
+      "msg": "vault has no LP capital"
+    },
+    {
+      "code": 6017,
+      "name": "BucketCapExceeded",
+      "msg": "outcome bucket cap would be exceeded"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidPredicate",
+      "msg": "predicate encoding is empty or too long"
+    },
+    {
+      "code": 6019,
+      "name": "PredicateHashMismatch",
+      "msg": "predicate hash does not match canonical predicate bytes"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidExpiry",
+      "msg": "policy expiry must be in the future"
+    },
+    {
+      "code": 6021,
+      "name": "PolicyNotOpen",
+      "msg": "policy is not open"
+    },
+    {
+      "code": 6022,
+      "name": "PolicyNotExpired",
+      "msg": "policy has not reached its expiry"
+    },
+    {
+      "code": 6023,
+      "name": "EscrowBalanceMismatch",
+      "msg": "policy escrow does not contain the full coverage amount"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidShareSupply",
+      "msg": "share supply and capital state are inconsistent"
+    },
+    {
+      "code": 6025,
+      "name": "TxlineProofTooLarge",
+      "msg": "TxLINE proof contains too many nodes or stats"
+    },
+    {
+      "code": 6026,
+      "name": "InvalidProofTimestamp",
+      "msg": "TxLINE proof timestamp cannot derive a valid daily root"
+    },
+    {
+      "code": 6027,
+      "name": "InvalidTxlineRoot",
+      "msg": "TxLINE daily scores root is not the expected program-owned PDA"
+    },
+    {
+      "code": 6028,
+      "name": "TxlineSerializationFailed",
+      "msg": "failed to serialize the pinned TxLINE validation instruction"
+    },
+    {
+      "code": 6029,
+      "name": "MissingTxlineReturnData",
+      "msg": "TxLINE validation CPI returned no result"
+    },
+    {
+      "code": 6030,
+      "name": "InvalidTxlineReturnProgram",
+      "msg": "validation return data did not originate from TxLINE"
+    },
+    {
+      "code": 6031,
+      "name": "TxlinePredicateRejected",
+      "msg": "TxLINE rejected the policy predicate"
+    },
+    {
+      "code": 6032,
+      "name": "SettlementPredicateMismatch",
+      "msg": "settlement proof does not exactly match the policy predicate"
+    },
+    {
+      "code": 6033,
+      "name": "SettlementNotFinal",
+      "msg": "settlement requires TxLINE final-period statistics"
+    },
+    {
+      "code": 6034,
+      "name": "InvalidAttestationSequence",
+      "msg": "attestation sequence must extend the current vault head"
+    },
+    {
+      "code": 6035,
+      "name": "InvalidAttestationPreviousHash",
+      "msg": "attestation previous hash does not match the current vault head"
+    },
+    {
+      "code": 6036,
+      "name": "AttestationBookMismatch",
+      "msg": "attested reserves or locked collateral do not match the vault"
+    },
+    {
+      "code": 6037,
+      "name": "InvalidSolvencyRatio",
+      "msg": "attested solvency ratio does not match reserves and marked liabilities"
+    },
+    {
+      "code": 6038,
+      "name": "InvalidAttestationHash",
+      "msg": "attestation record hash does not match its canonical fields"
+    },
+    {
+      "code": 6039,
+      "name": "TxlineOddsRejected",
+      "msg": "TxLINE rejected the odds record or its Merkle proof"
+    },
+    {
+      "code": 6040,
+      "name": "InvalidOddsMarket",
+      "msg": "TxLINE odds record is not a supported full-match 1X2 market"
+    },
+    {
+      "code": 6041,
+      "name": "OddsPolicyMismatch",
+      "msg": "TxLINE odds record does not match the policy fixture or outcome"
+    },
+    {
+      "code": 6042,
+      "name": "OddsMessageHashMismatch",
+      "msg": "odds message ID does not match the receipt PDA hash"
+    },
+    {
+      "code": 6043,
+      "name": "StaleOddsProof",
+      "msg": "TxLINE odds proof is too old or dated too far in the future"
+    },
+    {
+      "code": 6044,
+      "name": "OddsPremiumMismatch",
+      "msg": "policy premium does not match the on-chain calculation from validated odds"
+    },
+    {
+      "code": 6045,
+      "name": "VerifiedQuoteHashMismatch",
+      "msg": "quote hash does not commit to the validated TxLINE proof and policy terms"
+    },
+    {
+      "code": 6046,
+      "name": "ValidatedOddsRequired",
+      "msg": "this vault requires TxLINE-validated odds issuance"
+    },
+    {
+      "code": 6047,
+      "name": "TxlineFixtureRejected",
+      "msg": "TxLINE rejected the fixture record or its Merkle proof"
+    },
+    {
+      "code": 6048,
+      "name": "InvalidFixture",
+      "msg": "TxLINE fixture record is malformed or unsupported"
+    },
+    {
+      "code": 6049,
+      "name": "FixtureIdMismatch",
+      "msg": "TxLINE fixture identity does not match the expected fixture"
+    },
+    {
+      "code": 6050,
+      "name": "BucketHashMismatch",
+      "msg": "bucket hash does not match the policy fixture and outcome"
+    },
+    {
+      "code": 6051,
+      "name": "InvalidBrokerCommission",
+      "msg": "broker commission cannot exceed 1,000 basis points"
+    },
+    {
+      "code": 6052,
+      "name": "SelfReferral",
+      "msg": "the policy holder cannot receive their own broker commission"
+    }
+  ],
+  "types": [
+    {
+      "name": "AttestationPosted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "attestation",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "prev_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "record_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
+          },
+          {
+            "name": "marked_liabilities",
+            "type": "u64"
+          },
+          {
+            "name": "solvency_ratio_bps",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BrokerCommissionPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "broker",
+            "type": "pubkey"
+          },
+          {
+            "name": "commission",
+            "type": "u64"
+          },
+          {
+            "name": "premium",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExposureBucket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "bucket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "locked_exposure",
+            "type": "u64"
+          },
+          {
+            "name": "open_policy_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fixture",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "competition",
+            "type": "string"
+          },
+          {
+            "name": "competition_id",
+            "type": "i32"
+          },
+          {
+            "name": "fixture_group_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant1_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant1",
+            "type": "string"
+          },
+          {
+            "name": "participant2_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant2",
+            "type": "string"
+          },
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "participant1_is_home",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixtureBatchSummary",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "competition_id",
+            "type": "i32"
+          },
+          {
+            "name": "competition",
+            "type": "string"
+          },
+          {
+            "name": "update_stats",
+            "type": {
+              "defined": {
+                "name": "FixtureUpdateStats"
+              }
+            }
+          },
+          {
+            "name": "update_sub_tree_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixtureUpdateStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "update_count",
+            "type": "u32"
+          },
+          {
+            "name": "min_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "max_timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixtureValidated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validated_fixture",
+            "type": "pubkey"
+          },
+          {
+            "name": "fixture_id",
+            "type": "u64"
+          },
+          {
+            "name": "snapshot_timestamp_ms",
+            "type": "i64"
+          },
+          {
+            "name": "start_time_ms",
+            "type": "i64"
+          },
+          {
+            "name": "competition_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant1_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant2_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant1_is_home",
+            "type": "bool"
+          },
+          {
+            "name": "validation_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixtureValidationInput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "snapshot",
+            "type": {
+              "defined": {
+                "name": "Fixture"
+              }
+            }
+          },
+          {
+            "name": "summary",
+            "type": {
+              "defined": {
+                "name": "FixtureBatchSummary"
+              }
+            }
+          },
+          {
+            "name": "sub_tree_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          },
+          {
+            "name": "main_tree_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "IssuePolicyArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "predicate_len",
+            "type": "u8"
+          },
+          {
+            "name": "predicate_bytes",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "predicate_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "quote_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bucket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payout_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "coverage",
+            "type": "u64"
+          },
+          {
+            "name": "premium",
+            "type": "u64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LpDeposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp",
+            "type": "pubkey"
+          },
+          {
+            "name": "assets",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Odds",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "message_id",
+            "type": "string"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "bookmaker",
+            "type": "string"
+          },
+          {
+            "name": "bookmaker_id",
+            "type": "i32"
+          },
+          {
+            "name": "super_odds_type",
+            "type": "string"
+          },
+          {
+            "name": "game_state",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "in_running",
+            "type": "bool"
+          },
+          {
+            "name": "market_parameters",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "market_period",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "price_names",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "prices",
+            "type": {
+              "vec": "i32"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OddsBatchSummary",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "update_stats",
+            "type": {
+              "defined": {
+                "name": "OddsUpdateStats"
+              }
+            }
+          },
+          {
+            "name": "odds_sub_tree_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OddsUpdateStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "update_count",
+            "type": "i32"
+          },
+          {
+            "name": "min_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "max_timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OddsValidated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validated_odds",
+            "type": "pubkey"
+          },
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "odds_timestamp_ms",
+            "type": "i64"
+          },
+          {
+            "name": "message_id_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "validation_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "prices",
+            "type": {
+              "array": [
+                "i32",
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OddsValidationInput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "odds_snapshot",
+            "type": {
+              "defined": {
+                "name": "Odds"
+              }
+            }
+          },
+          {
+            "name": "summary",
+            "type": {
+              "defined": {
+                "name": "OddsBatchSummary"
+              }
+            }
+          },
+          {
+            "name": "sub_tree_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          },
+          {
+            "name": "main_tree_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Policy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PolicyStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "predicate_len",
+            "type": "u8"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "payout_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bucket",
+            "type": "pubkey"
+          },
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "predicate_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "quote_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bucket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "merkle_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "predicate_bytes",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "coverage",
+            "type": "u64"
+          },
+          {
+            "name": "premium",
+            "type": "u64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyExpired",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "caller",
+            "type": "pubkey"
+          },
+          {
+            "name": "coverage",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyIssued",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "coverage",
+            "type": "u64"
+          },
+          {
+            "name": "premium",
+            "type": "u64"
+          },
+          {
+            "name": "predicate_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "quote_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bucket_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyIssuedWithValidatedOdds",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "validated_fixture",
+            "type": "pubkey"
+          },
+          {
+            "name": "validated_odds",
+            "type": "pubkey"
+          },
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "odds_timestamp_ms",
+            "type": "i64"
+          },
+          {
+            "name": "message_id_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "validation_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "probability_ppm",
+            "type": "u32"
+          },
+          {
+            "name": "premium",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicySettled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "caller",
+            "type": "pubkey"
+          },
+          {
+            "name": "payout_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "coverage",
+            "type": "u64"
+          },
+          {
+            "name": "merkle_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Triggered"
+          },
+          {
+            "name": "Expired"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PostAttestationArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "prev_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "record_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "odds_packet_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "book_snapshot_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
+          },
+          {
+            "name": "locked_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "marked_liabilities",
+            "type": "u64"
+          },
+          {
+            "name": "solvency_ratio_bps",
+            "type": "u64"
+          },
+          {
+            "name": "observed_at_ms",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProofNode",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "is_right_sibling",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScoreStat",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": "u32"
+          },
+          {
+            "name": "value",
+            "type": "i32"
+          },
+          {
+            "name": "period",
+            "type": "i32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScoresBatchSummary",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "update_stats",
+            "type": {
+              "defined": {
+                "name": "ScoresUpdateStats"
+              }
+            }
+          },
+          {
+            "name": "events_sub_tree_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScoresUpdateStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "update_count",
+            "type": "i32"
+          },
+          {
+            "name": "min_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "max_timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SolvencyAttestation",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "seq",
+            "type": "u64"
+          },
+          {
+            "name": "prev_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "record_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "odds_packet_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "book_snapshot_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
+          },
+          {
+            "name": "locked_collateral",
+            "type": "u64"
+          },
+          {
+            "name": "marked_liabilities",
+            "type": "u64"
+          },
+          {
+            "name": "solvency_ratio_bps",
+            "type": "u64"
+          },
+          {
+            "name": "observed_at_ms",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StatLeaf",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stat",
+            "type": {
+              "defined": {
+                "name": "ScoreStat"
+              }
+            }
+          },
+          {
+            "name": "stat_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "StatValidationInput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "fixture_summary",
+            "type": {
+              "defined": {
+                "name": "ScoresBatchSummary"
+              }
+            }
+          },
+          {
+            "name": "fixture_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          },
+          {
+            "name": "main_tree_proof",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProofNode"
+                }
+              }
+            }
+          },
+          {
+            "name": "event_stat_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "stats",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "StatLeaf"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatedFixture",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "participant1_is_home",
+            "type": "bool"
+          },
+          {
+            "name": "fixture_id",
+            "type": "u64"
+          },
+          {
+            "name": "snapshot_timestamp_ms",
+            "type": "i64"
+          },
+          {
+            "name": "start_time_ms",
+            "type": "i64"
+          },
+          {
+            "name": "competition_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant1_id",
+            "type": "i32"
+          },
+          {
+            "name": "participant2_id",
+            "type": "i32"
+          },
+          {
+            "name": "validation_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatedOdds",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "fixture_id",
+            "type": "i64"
+          },
+          {
+            "name": "odds_timestamp_ms",
+            "type": "i64"
+          },
+          {
+            "name": "message_id_key",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "message_id_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "validation_receipt_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "prices",
+            "type": {
+              "array": [
+                "i32",
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "asset_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "vault_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "share_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_capital",
+            "type": "u64"
+          },
+          {
+            "name": "free_reserves",
+            "type": "u64"
+          },
+          {
+            "name": "locked_liabilities",
+            "type": "u64"
+          },
+          {
+            "name": "max_bucket_bps",
+            "type": "u16"
+          },
+          {
+            "name": "epoch_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "policy_count",
+            "type": "u64"
+          },
+          {
+            "name": "attestation_seq",
+            "type": "u64"
+          },
+          {
+            "name": "latest_attestation_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "margin_bps",
+            "type": "u16"
+          },
+          {
+            "name": "formula_version",
+            "type": "u16"
+          },
+          {
+            "name": "broker_commission_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "share_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "max_bucket_bps",
+            "type": "u16"
+          },
+          {
+            "name": "epoch_seconds",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawalExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp",
+            "type": "pubkey"
+          },
+          {
+            "name": "request",
+            "type": "pubkey"
+          },
+          {
+            "name": "assets",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawalRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp",
+            "type": "pubkey"
+          },
+          {
+            "name": "share_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "request_id",
+            "type": "u64"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "unlock_ts",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "WithdrawalStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawalRequested",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp",
+            "type": "pubkey"
+          },
+          {
+            "name": "request",
+            "type": "pubkey"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "unlock_ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawalStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Executed"
+          }
+        ]
+      }
+    }
+  ]
+}
