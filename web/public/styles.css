@@ -79,6 +79,7 @@ body {
 .state { font-size: 12px; font-weight: 800; letter-spacing: .06em; padding: 4px 10px; border-radius: 999px; }
 .state.pre { color: var(--text-secondary); background: rgba(255,255,255,.05); border: 1px solid var(--line-strong); }
 .state.live { color: #fff; background: #d03b3b; box-shadow: 0 0 0 4px rgba(208,59,59,.15); }
+.state.oddslive { color: #1a1a19; background: #e0a53a; box-shadow: 0 0 0 4px rgba(201,133,0,.18); animation: pulse 2s infinite; cursor: help; }
 .state.ft { color: var(--text-secondary); background: rgba(255,255,255,.05); border: 1px solid var(--line-strong); }
 
 .teams { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 6px; }

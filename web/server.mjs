@@ -16,6 +16,7 @@ import {
   fetchFixtureSnapshot,
   fetchLatestFullMatchOdds,
   oddsAge,
+  ODDS_FRESHNESS_MS,
 } from "../bridge/txline.mjs";
 import { normalizedProbabilityPpm, validatedQuoteTerms, OUTCOMES } from "../server/pricing.mjs";
 
@@ -85,13 +86,22 @@ async function fixturePayload(s, f) {
   const score = snap.Participant1Score != null && snap.Participant2Score != null
     ? { home: snap.Participant1Score, away: snap.Participant2Score } : null;
 
+  // The dev feed streams live, moving, signed odds packets but never advances the
+  // fixture match-state fields (GameState/score) — so `live` (in-play from the feed)
+  // almost never trips. `oddsLive` is the honest signal we CAN prove: kickoff has
+  // passed and the signed 1X2 packet is inside the same freshness window the SURETY
+  // program requires to bind a policy. It asserts the odds are live, not a scoreline.
+  const now = Date.now();
+  const age = oddsAge(packet, now);
+  const oddsLive = now >= snap.StartTime && age >= -0 && age <= ODDS_FRESHNESS_MS;
+
   return {
     id: String(f.id), home: f.home, away: f.away, homeFlag: f.homeFlag, awayFlag: f.awayFlag,
     startTime: snap.StartTime, kickoffISO: new Date(snap.StartTime).toISOString(),
-    gameState: snap.GameState, live: snap.GameState > 1, score,
+    gameState: snap.GameState, live: snap.GameState > 1, oddsLive, score,
     prices, priceNames: packet.PriceNames, probs,
     odds: { home: decimalOdds(probs.home), draw: decimalOdds(probs.draw), away: decimalOdds(probs.away) },
-    quote, packetMsg: packet.MessageId, packetTs: packet.Ts, ageSec: Math.round(oddsAge(packet) / 1000),
+    quote, packetMsg: packet.MessageId, packetTs: packet.Ts, ageSec: Math.round(age / 1000),
   };
 }
 

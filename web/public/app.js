@@ -14,8 +14,11 @@ function kickoffLabel(f) {
 }
 
 function stateChip(f) {
-  if (f.live) return `<span class="state live">● LIVE</span>`;
   if (f.gameState >= 3) return `<span class="state ft">FULL TIME</span>`;
+  if (f.live) return `<span class="state live">● LIVE</span>`;
+  // Kickoff has passed and fresh signed odds are still arriving. The feed does not
+  // publish an in-play score, so we assert the odds are live — not the scoreline.
+  if (f.oddsLive) return `<span class="state oddslive" title="Match kicked off — showing live signed odds. The feed does not publish an in-play score.">● LIVE ODDS</span>`;
   return `<span class="state pre">UPCOMING</span>`;
 }
 
