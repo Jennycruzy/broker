@@ -8,6 +8,7 @@
   },
   "scripts": {
     "server": "node server/index.mjs",
+    "dashboard": "node web/server.mjs",
     "test:gate1": "node --test server/*.test.mjs",
     "wallets:gate1": "node scripts/create-gate1-wallets.mjs"
   },

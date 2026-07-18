@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BROKER — Live World Cup Coverage</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="viz-root">
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">B</div>
+        <div class="brand-txt">
+          <h1>BROKER</h1>
+          <p>An AI agent that buys insurance for itself.</p>
+        </div>
+      </div>
+      <div class="topright">
+        <div class="live-pill" id="feedPill"><span class="dot"></span><span id="feedTxt">connecting…</span></div>
+        <div class="chips">
+          <span class="chip">x402</span><span class="chip">CCTP</span>
+          <span class="chip">MCP Server</span><span class="chip">Agent Skills</span>
+        </div>
+      </div>
+    </header>
+
+    <p class="lede">Autonomous agents carry World Cup exposure with no way to hedge it. BROKER sells <strong>risk transfer</strong>: an agent pays a premium over x402 and walks away with collateralized coverage — priced live from cryptographically signed odds, settled on-chain. This board reads the <strong>live TxLINE feed</strong> and reproduces the deployed SURETY vault's on-chain premium math.</p>
+
+    <section class="matches" id="matches">
+      <!-- match cards injected here -->
+      <div class="card skeleton"></div>
+      <div class="card skeleton"></div>
+    </section>
+
+    <section class="policy" id="policy"><!-- bound policy injected --></section>
+
+    <footer class="foot">
+      <span>Live odds via <strong>TxLINE</strong> — signed, Merkle-anchored 1X2 feeds.</span>
+      <span>Premium reproduces the on-chain <strong>SURETY</strong> quote (byte-exact vs the program's Rust vector).</span>
+      <span>Injective <strong>testnet</strong> · Solana <strong>devnet</strong> · no mainnet claims.</span>
+      <span id="asOf"></span>
+    </footer>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
