@@ -1,0 +1,18 @@
+[Unit]
+Description=BROKER demo dashboard — live match board over the TxLINE feed
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/broker
+Environment=PORT=8787
+ExecStart=/opt/broker/web/deploy/run-dashboard.sh
+# Long-running web service: always bring it back up.
+Restart=always
+RestartSec=3
+StandardOutput=append:/opt/broker/data/dashboard.out.log
+StandardError=append:/opt/broker/data/dashboard.err.log
+
+[Install]
+WantedBy=multi-user.target
