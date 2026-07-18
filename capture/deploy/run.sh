@@ -13,4 +13,12 @@ set -a
 source "$ENV_FILE"
 set +a
 
-exec node capture/recorder.mjs
+# @surety-tx/txline-verify's named imports of @anchor-lang/core (a CJS build with
+# no exports map) only resolve under Node's newer CJS export detection. Prefer a
+# repo-local runtime if one is provisioned; fall back to the system node.
+NODE_BIN="node"
+if [ -x "$REPO_ROOT/.runtime/bin/node" ]; then
+  NODE_BIN="$REPO_ROOT/.runtime/bin/node"
+fi
+
+exec "$NODE_BIN" capture/recorder.mjs
