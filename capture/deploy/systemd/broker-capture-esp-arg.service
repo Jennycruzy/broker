@@ -1,0 +1,13 @@
+[Unit]
+Description=BROKER match capture — ESP v ARG final (fixture 18257739)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/broker
+ExecStart=/opt/broker/capture/deploy/run.sh capture/deploy/env/esp-arg.env
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/opt/broker/data/recordings/18257739/service.out.log
+StandardError=append:/opt/broker/data/recordings/18257739/service.err.log

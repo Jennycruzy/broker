@@ -1,0 +1,12 @@
+# Cron fallback if the VPS has neither systemd nor pm2.
+# Install with:  crontab capture/deploy/crontab.txt
+# Times are UTC — confirm the VPS crond runs in UTC (see DEPLOY.md), or convert.
+#
+# Each line starts run.sh 10 min before kickoff. run.sh exec's the recorder,
+# which self-stops at kickoff+180min. The @reboot line re-checks on reboot so a
+# VPS restart before kickoff does not silently drop the capture (the recorder is
+# idempotent — it resumes from packets.jsonl and dedupes).
+#
+# min hour day mon dow  command
+50 20 18 7 *   cd /opt/broker && capture/deploy/run.sh capture/deploy/env/fra-eng.env >> data/recordings/18257865/cron.log 2>&1
+50 18 19 7 *   cd /opt/broker && capture/deploy/run.sh capture/deploy/env/esp-arg.env >> data/recordings/18257739/cron.log 2>&1

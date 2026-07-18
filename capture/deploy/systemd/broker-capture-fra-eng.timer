@@ -1,0 +1,10 @@
+[Unit]
+Description=Fire BROKER FRA v ENG capture 10 min before kickoff
+
+[Timer]
+# Kickoff 2026-07-18 21:00:00 UTC → start recorder at 20:50 UTC.
+OnCalendar=2026-07-18 20:50:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

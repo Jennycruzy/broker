@@ -1,0 +1,15 @@
+[Unit]
+Description=BROKER match capture — FRA v ENG (fixture 18257865)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adjust WorkingDirectory + User to the VPS checkout / account.
+WorkingDirectory=/opt/broker
+ExecStart=/opt/broker/capture/deploy/run.sh capture/deploy/env/fra-eng.env
+# Restart only on crash. A clean exit means the capture window closed — do not relaunch.
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/opt/broker/data/recordings/18257865/service.out.log
+StandardError=append:/opt/broker/data/recordings/18257865/service.err.log

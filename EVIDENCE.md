@@ -1,3 +1,6 @@
+
+
+
 # Evidence
 
 ## Gate 0 — Ground truth: PASS
@@ -154,7 +157,7 @@ Unverified dependency remediation: npm reports 10 advisories in the exact
 Anchor/Solana versions shared with SURETY; suggested automatic fixes are incompatible
 downgrades. This does not change the Gate 2 chain receipts and remains disclosed.
 
-## Gate 3 — Policy binds on SURETY: PART A PASS (validation), PART B BLOCKED (issuance)
+## Gate 3 — Policy binds on SURETY: PASS (Part A validation + Part B issuance)
 
 Gate 3 splits into the TxLINE-validation primitive it names, and the on-chain
 policy issuance that consumes it. Both are verified. Part A proves the validator
@@ -286,3 +289,23 @@ Self-audit (Part A):
 Gate 3 is complete: the TxLINE validation primitive is proven (Part A) and a real
 5 USDC policy is bound on the deployed SURETY program with fresh TxLINE-validated
 odds (Part B), independently verified on-chain.
+
+## Match capture — live feed reachable, fixtures confirmed
+
+Verified (2026-07-18 ~10:45 UTC, from the build environment): the TxLINE API
+authenticates with the stored token, `/api/fixtures/snapshot` returns HTTP 200
+with 8 rows, and fresh signed full-match 1X2 packets are flowing for FRA v ENG
+(e.g. `msg 1838314406:00003:000228-10021-stab`, prices `[1948, 4251, 3978]`,
+~7 min old at fetch).
+
+Verified fixture ids from the live snapshot (confirmed, not assumed):
+
+- **18257865** — France v England — kickoff 2026-07-18 21:00 UTC (World Cup).
+- **18257739** — Spain v Argentina (the final) — kickoff 2026-07-19 19:00 UTC
+  (World Cup). Participant ids: Spain 3021 (home), Argentina 1489.
+
+Unverified: unattended scheduled capture on a persistent host. The build
+environment is a container without `systemd` (PID 1), `pm2`, or `cron`, so it
+cannot itself run or supervise the multi-hour capture windows. The recorder is
+built and dry-run against the live feed; deployment onto the operator's VPS is a
+blocker owned by the operator (see below / build report).
