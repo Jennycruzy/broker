@@ -57,3 +57,12 @@
 - 2026-07-19T20:56:18.922Z — snapshot (kickoff-window-open) written: snapshots/1784494578921-kickoff-window-open.json
 - 2026-07-19T20:56:19.980Z — snapshot (gamestate-1) written: snapshots/1784494579980-gamestate-1.json
 - 2026-07-19T20:56:20.374Z — fixture proof captured (gamestate-1); GameState=1
+- 2026-07-19T21:00:53.615Z — odds packet 1838538003:00003:000428-10021-stab prices=[3574,1614,9931] age=54s
+- 2026-07-19T21:01:28.000Z — fixture proof captured (periodic); GameState=1
+- 2026-07-19T21:05:45.090Z — odds packet 1838538508:00003:000001-10021-stab prices=[4726,1412,12400] age=47s
+- 2026-07-19T21:06:33.326Z — fixture proof captured (periodic); GameState=1
+- 2026-07-19T21:15:52.512Z — odds packet 1838539384:00003:000503-10021-stab prices=[17400,1067,180000] age=59s
+- 2026-07-19T21:15:53.375Z — fixture proof captured (periodic); GameState=1
+- 2026-07-19T23:00:02.249Z — fixture proof captured (window-close); GameState=1
+- 2026-07-19T23:00:02.249Z — snapshot (full-time) written: snapshots/1784502002249-full-time.json
+- 2026-07-19T23:00:02.250Z — recorder stop; total packets=60
