@@ -1,0 +1,19 @@
+{
+  "reason": "kickoff-window-open",
+  "at": "2026-07-19T18:50:04.272Z",
+  "fixture": {
+    "Ts": 1784149200000,
+    "StartTime": 1784487600000,
+    "Competition": "World Cup",
+    "CompetitionId": 72,
+    "FixtureGroupId": 10115676,
+    "Participant1Id": 3021,
+    "Participant1": "Spain",
+    "Participant2Id": 1489,
+    "Participant2": "Argentina",
+    "FixtureId": 18257739,
+    "Participant1IsHome": true,
+    "GameState": 1
+  },
+  "odds": null
+}

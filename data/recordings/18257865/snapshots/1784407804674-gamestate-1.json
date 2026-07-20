@@ -1,0 +1,45 @@
+{
+  "reason": "gamestate-1",
+  "at": "2026-07-18T20:50:04.674Z",
+  "fixture": {
+    "Ts": 1784149200000,
+    "StartTime": 1784408400000,
+    "Competition": "World Cup",
+    "CompetitionId": 72,
+    "FixtureGroupId": 10115771,
+    "Participant1Id": 1999,
+    "Participant1": "France",
+    "Participant2Id": 1888,
+    "Participant2": "England",
+    "FixtureId": 18257865,
+    "Participant1IsHome": true,
+    "GameState": 1
+  },
+  "odds": {
+    "FixtureId": 18257865,
+    "MessageId": "1838381478:00003:000804-10021-stab",
+    "Ts": 1784407404579,
+    "Bookmaker": "TXLineStablePriceDemargined",
+    "BookmakerId": 10021,
+    "SuperOddsType": "1X2_PARTICIPANT_RESULT",
+    "GameState": null,
+    "InRunning": false,
+    "MarketParameters": null,
+    "MarketPeriod": null,
+    "PriceNames": [
+      "part1",
+      "draw",
+      "part2"
+    ],
+    "Prices": [
+      1787,
+      4390,
+      4705
+    ],
+    "Pct": [
+      "55.960",
+      "22.779",
+      "21.254"
+    ]
+  }
+}

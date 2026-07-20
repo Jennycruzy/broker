@@ -1,6 +1,4 @@
 
-
-
 # Evidence
 
 ## Gate 0 — Ground truth: PASS

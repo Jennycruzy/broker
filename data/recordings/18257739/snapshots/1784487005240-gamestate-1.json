@@ -1,0 +1,45 @@
+{
+  "reason": "gamestate-1",
+  "at": "2026-07-19T18:50:05.240Z",
+  "fixture": {
+    "Ts": 1784149200000,
+    "StartTime": 1784487600000,
+    "Competition": "World Cup",
+    "CompetitionId": 72,
+    "FixtureGroupId": 10115676,
+    "Participant1Id": 3021,
+    "Participant1": "Spain",
+    "Participant2Id": 1489,
+    "Participant2": "Argentina",
+    "FixtureId": 18257739,
+    "Participant1IsHome": true,
+    "GameState": 1
+  },
+  "odds": {
+    "FixtureId": 18257739,
+    "MessageId": "1838524635:00003:000170-10021-stab",
+    "Ts": 1784486696367,
+    "Bookmaker": "TXLineStablePriceDemargined",
+    "BookmakerId": 10021,
+    "SuperOddsType": "1X2_PARTICIPANT_RESULT",
+    "GameState": null,
+    "InRunning": false,
+    "MarketParameters": null,
+    "MarketPeriod": null,
+    "PriceNames": [
+      "part1",
+      "draw",
+      "part2"
+    ],
+    "Prices": [
+      2361,
+      3179,
+      3819
+    ],
+    "Pct": [
+      "42.355",
+      "31.456",
+      "26.185"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 node_modules/
 .runtime/
 .secrets/
+HANDOFF.md
 .env
 npm-debug.log*

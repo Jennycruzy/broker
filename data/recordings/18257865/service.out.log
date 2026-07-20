@@ -1,0 +1,279 @@
+2026-07-18T20:50:02.980Z recorder start; fixture=18257865 kickoff=2026-07-18T21:00:00.000Z stopAfter=180min poll=15s
+2026-07-18T20:50:03.674Z snapshot (kickoff-window-open) written: snapshots/1784407803674-kickoff-window-open.json
+2026-07-18T20:50:04.560Z odds packet 1838381478:00003:000804-10021-stab prices=[1787,4390,4705] age=399s
+2026-07-18T20:50:04.674Z snapshot (gamestate-1) written: snapshots/1784407804674-gamestate-1.json
+2026-07-18T20:50:05.302Z fixture proof captured (gamestate-1); GameState=1
+2026-07-18T20:50:36.733Z odds packet 1838382180:00003:001002-10021-stab prices=[1772,4443,4748] age=42s
+2026-07-18T20:55:05.645Z fixture proof captured (periodic); GameState=1
+2026-07-18T20:55:37.490Z odds packet 1838382710:00003:000307-10021-stab prices=[1770,4432,4775] age=51s
+2026-07-18T21:00:21.595Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:00:37.406Z odds packet 1838383261:00003:000621-10021-stab prices=[1758,4496,4790] age=37s
+2026-07-18T21:05:21.878Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:05:37.835Z odds packet 1838383801:00003:000159-10021-stab prices=[2669,3989,2669] age=37s
+2026-07-18T21:10:26.836Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:10:42.640Z odds packet 1838384315:00003:000297-10021-stab prices=[2851,3927,2534] age=42s
+2026-07-18T21:15:32.552Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:15:48.425Z odds packet 1838384853:00003:000835-10021-stab prices=[2851,3940,2529] age=48s
+2026-07-18T21:20:43.553Z odds packet 1838385385:00003:000669-10021-stab prices=[5941,5081,1575] age=44s
+2026-07-18T21:20:44.326Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:25:45.826Z odds packet 1838385918:00003:000174-10021-stab prices=[6385,5229,1533] age=47s
+2026-07-18T21:25:46.748Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:30:48.475Z odds packet 1838386432:00003:001868-10021-stab prices=[6516,5293,1521] age=50s
+2026-07-18T21:30:49.354Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:35:58.648Z odds packet 1838386968:00003:000114-10021-stab prices=[6673,5185,1521] age=58s
+2026-07-18T21:35:59.593Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:40:44.603Z odds packet 1838387489:00003:000607-10021-stab prices=[22700,11400,1151] age=45s
+2026-07-18T21:41:01.453Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:45:47.685Z odds packet 1838388028:00003:000118-10021-stab prices=[25900,13100,1130] age=49s
+2026-07-18T21:46:04.209Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:50:49.737Z odds packet 1838388584:00003:000131-10021-stab prices=[160000,42800,1030] age=50s
+2026-07-18T21:51:06.390Z fixture proof captured (periodic); GameState=1
+2026-07-18T21:55:37.134Z odds packet 1838389026:00003:000050-10021-stab prices=[73000,34100,1045] age=90s
+2026-07-18T21:56:09.963Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:00:45.817Z odds packet 1838389621:00003:000654-10021-stab prices=[130000,38900,1035] age=50s
+2026-07-18T22:01:17.991Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:05:47.107Z odds packet 1838389951:00003:000074-10021-stab prices=[90000,33100,1043] age=163s
+2026-07-18T22:06:25.751Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:10:41.398Z odds packet 1838390657:00003:000210-10021-stab prices=[80000,36300,1042] age=44s
+2026-07-18T22:11:29.685Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:15:44.998Z odds packet 1838391183:00003:000041-10021-stab prices=[24300,12300,1139] age=47s
+2026-07-18T22:16:32.985Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:20:48.486Z odds packet 1838391725:00003:000037-10021-stab prices=[8702,5537,1420] age=49s
+2026-07-18T22:21:36.899Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:25:38.366Z odds packet 1838392236:00003:000418-10021-stab prices=[8941,5451,1419] age=42s
+2026-07-18T22:26:43.449Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:30:44.138Z odds packet 1838392749:00003:000104-10021-stab prices=[3815,3128,2391] age=44s
+2026-07-18T22:31:48.339Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:35:49.308Z odds packet 1838393274:00003:000476-10021-stab prices=[3893,3118,2368] age=48s
+2026-07-18T22:36:54.475Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:40:38.536Z odds packet 1838393815:00003:000057-10021-stab prices=[4287,3011,2301] age=39s
+2026-07-18T22:41:59.882Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:45:43.358Z odds packet 1838394348:00003:000187-10021-stab prices=[7209,3316,1787] age=43s
+2026-07-18T22:47:04.705Z fixture proof captured (periodic); GameState=1
+2026-07-18T22:50:49.261Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:51:05.179Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:51:20.865Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:51:36.554Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:51:52.497Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:52:08.470Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:52:24.157Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:52:40.037Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:52:56.169Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:53:12.061Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:53:27.748Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:53:43.645Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:53:59.608Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:54:15.950Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:54:31.798Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:54:47.694Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:55:03.398Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:55:19.285Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:55:35.134Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T22:55:51.505Z odds packet 1838395391:00003:000143-10021-stab prices=[400000,40200,1028] age=53s
+2026-07-18T22:55:52.243Z fixture proof captured (periodic); GameState=1
+2026-07-18T23:00:39.968Z odds packet 1838395898:00003:000395-10021-stab prices=[290000,17300,1065] age=45s
+2026-07-18T23:00:56.829Z fixture proof captured (periodic); GameState=1
+2026-07-18T23:05:44.339Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:06:00.017Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:06:15.929Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:06:31.621Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:06:47.566Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:07:03.304Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:07:19.193Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:07:35.110Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:07:51.079Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:08:07.129Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:08:22.803Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:08:38.677Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:08:54.507Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:09:10.442Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:09:26.343Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:09:42.236Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:09:58.149Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:10:14.067Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:10:29.954Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:10:46.024Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:11:01.903Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:11:17.878Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:11:33.838Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:11:49.718Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:12:05.614Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:12:21.479Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:12:37.354Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:12:53.440Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:13:09.304Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:13:25.245Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:13:40.922Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:13:57.029Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:14:12.930Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:14:28.830Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:14:44.709Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:15:00.503Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:15:16.220Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:15:32.149Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:15:48.081Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:16:03.775Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:16:19.641Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:16:35.558Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:16:51.443Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:17:07.467Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:17:23.327Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:17:39.210Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:17:55.384Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:18:11.247Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:18:27.101Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:18:43.004Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:18:58.881Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:19:14.767Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:19:30.657Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:19:46.645Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:20:02.597Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:20:18.253Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:20:34.199Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:20:49.956Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:21:05.834Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:21:21.586Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:21:37.445Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:21:53.208Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:22:09.058Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:22:24.925Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:22:40.697Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:22:56.391Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:23:12.252Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:23:28.132Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:23:44.010Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:23:59.903Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:24:15.782Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:24:31.661Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:24:47.503Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:25:03.373Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:25:19.220Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:25:35.077Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:25:51.002Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:26:06.964Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:26:22.665Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:26:38.506Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:26:54.457Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:27:10.349Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:27:26.238Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:27:42.081Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:27:57.881Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:28:13.765Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:28:29.453Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:28:45.332Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:29:01.171Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:29:17.076Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:29:32.800Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:29:48.677Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:30:04.374Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:30:20.264Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:30:36.809Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:30:52.668Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:31:08.541Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:31:24.487Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:31:40.403Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:31:56.267Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:32:12.156Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:32:28.025Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:32:43.895Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:32:59.730Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:33:15.839Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:33:31.737Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:33:47.590Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:34:03.451Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:34:19.299Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:34:35.162Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:34:51.096Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:35:07.164Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:35:23.032Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:35:38.917Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:35:54.820Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:36:10.786Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:36:26.661Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:36:42.527Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:36:58.204Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:37:14.111Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:37:29.965Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:37:45.939Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:38:01.630Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:38:17.480Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:38:33.350Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:38:49.223Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:39:05.082Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:39:20.786Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:39:36.697Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:39:52.594Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:40:08.529Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:40:24.397Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:40:40.232Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:40:56.211Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:41:12.131Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:41:28.024Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:41:43.890Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:41:59.784Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:42:15.893Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:42:31.746Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:42:47.603Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:43:03.279Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:43:19.185Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:43:35.018Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:43:50.986Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:44:06.846Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:44:22.577Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:44:38.450Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:44:54.337Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:45:10.281Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:45:26.162Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:45:42.035Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:45:58.075Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:46:14.016Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:46:29.896Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:46:45.768Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:47:01.452Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:47:17.223Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:47:33.161Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:47:49.037Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:48:04.700Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:48:20.491Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:48:36.355Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:48:52.291Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:49:08.191Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:49:24.116Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:49:40.024Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:49:56.098Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:50:11.982Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:50:27.881Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:50:52.388Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:51:08.364Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:51:24.215Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:51:40.097Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:51:56.010Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:52:11.884Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:52:27.821Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:53:11.808Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:53:47.038Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:54:02.737Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:54:18.590Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:54:34.457Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:54:50.486Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:55:06.542Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:55:22.424Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:55:38.363Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:55:54.348Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:56:10.275Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:56:26.158Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:56:42.034Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:56:57.984Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:57:13.833Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:57:31.119Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:57:46.977Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:58:02.907Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:58:18.807Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:58:34.686Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:58:50.821Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:59:06.957Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:59:22.828Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:59:38.708Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-18T23:59:54.567Z poll error: fixture 18257865 has no canonical full-match TxLINE 1X2 packet
+2026-07-19T00:00:09.886Z window-close result capture failed: fixture 18257865 is absent from the authenticated TxLINE snapshot
+2026-07-19T00:00:09.886Z recorder stop; total packets=53

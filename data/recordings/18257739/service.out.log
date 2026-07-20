@@ -1,0 +1,60 @@
+2026-07-19T18:50:03.557Z recorder start; fixture=18257739 kickoff=2026-07-19T19:00:00.000Z stopAfter=180min poll=15s
+2026-07-19T18:50:04.272Z snapshot (kickoff-window-open) written: snapshots/1784487004272-kickoff-window-open.json
+2026-07-19T18:50:04.947Z odds packet 1838524635:00003:000170-10021-stab prices=[2361,3179,3819] age=308s
+2026-07-19T18:50:05.241Z snapshot (gamestate-1) written: snapshots/1784487005240-gamestate-1.json
+2026-07-19T18:50:05.693Z fixture proof captured (gamestate-1); GameState=1
+2026-07-19T18:50:38.933Z odds packet 1838525123:00003:000448-10021-stab prices=[2363,3203,3781] age=46s
+2026-07-19T18:55:10.221Z fixture proof captured (periodic); GameState=1
+2026-07-19T18:55:58.855Z odds packet 1838525646:00003:000024-10021-stab prices=[2354,3205,3798] age=72s
+2026-07-19T19:00:11.874Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:00:43.247Z odds packet 1838526164:00003:000444-10021-stab prices=[2337,3215,3831] age=52s
+2026-07-19T19:05:14.205Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:05:46.282Z odds packet 1838526693:00003:001746-10021-stab prices=[2343,3187,3854] age=46s
+2026-07-19T19:10:17.014Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:10:54.905Z odds packet 1838527206:00003:000520-10021-stab prices=[2346,3131,3932] age=50s
+2026-07-19T19:15:23.166Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:16:00.208Z odds packet 1838527702:00003:000668-10021-stab prices=[2237,3199,4160] age=60s
+2026-07-19T19:21:09.613Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:22:17.069Z odds packet 1838528245:00003:000321-10021-stab prices=[2223,3142,4313] age=112s
+2026-07-19T19:26:02.754Z odds packet 1838528770:00003:000184-10021-stab prices=[2241,3075,4376] age=62s
+2026-07-19T19:26:03.510Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:30:42.259Z odds packet 1838529283:00003:000888-10021-stab prices=[2344,2973,4220] age=41s
+2026-07-19T19:31:16.924Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:35:51.351Z odds packet 1838529801:00003:000018-10021-stab prices=[2371,2938,4203] age=50s
+2026-07-19T19:36:26.062Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:40:40.509Z odds packet 1838530302:00003:000472-10021-stab prices=[2454,2845,4151] age=46s
+2026-07-19T19:41:29.967Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:45:40.061Z odds packet 1838530818:00003:000074-10021-stab prices=[2446,2763,4363] age=40s
+2026-07-19T19:46:31.805Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:50:53.624Z odds packet 1838531320:00003:000039-10021-stab prices=[2463,2663,4574] age=55s
+2026-07-19T19:51:41.946Z fixture proof captured (periodic); GameState=1
+2026-07-19T19:55:46.936Z odds packet 1838531814:00003:000954-10021-stab prices=[2523,2566,4675] age=47s
+2026-07-19T19:56:51.360Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:01:28.789Z odds packet 1838532302:00003:000438-10021-stab prices=[2576,2534,4606] age=67s
+2026-07-19T20:02:01.481Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:05:45.501Z odds packet 1838532687:00003:000497-10021-stab prices=[2524,2560,4691] age=79s
+2026-07-19T20:07:10.605Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:10:44.289Z odds packet 1838533113:00003:000035-10021-stab prices=[2492,2562,4798] age=62s
+2026-07-19T20:12:29.278Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:15:43.625Z odds packet 1838533551:00003:000473-10021-stab prices=[2532,2572,4625] age=70s
+2026-07-19T20:17:36.545Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:20:56.174Z odds packet 1838534065:00003:000029-10021-stab prices=[2542,2560,4629] age=51s
+2026-07-19T20:22:38.621Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:25:49.791Z odds packet 1838534571:00003:000770-10021-stab prices=[2635,2506,4516] age=51s
+2026-07-19T20:27:47.637Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:30:40.542Z odds packet 1838535055:00003:001173-10021-stab prices=[2738,2367,4708] age=38s
+2026-07-19T20:32:53.009Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:35:53.798Z odds packet 1838535546:00003:001021-10021-stab prices=[2785,2199,5367] age=54s
+2026-07-19T20:38:04.190Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:40:43.775Z odds packet 1838536026:00003:001226-10021-stab prices=[2806,2089,6068] age=43s
+2026-07-19T20:43:10.315Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:45:51.681Z odds packet 1838536524:00003:000040-10021-stab prices=[2916,1962,6786] age=53s
+2026-07-19T20:48:13.193Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:50:59.321Z odds packet 1838537007:00003:000077-10021-stab prices=[3063,1903,6756] age=61s
+2026-07-19T20:53:28.152Z fixture proof captured (periodic); GameState=1
+2026-07-19T20:55:53.067Z odds packet 1838537496:00003:000031-10021-stab prices=[3188,1766,8324] age=55s
+2026-07-19T20:56:18.666Z recorder start; fixture=18257739 kickoff=2026-07-19T19:00:00.000Z stopAfter=240min poll=15s
+2026-07-19T20:56:18.668Z resumed after restart at 52 packets, cursor 1838537496:00003:000031-10021-stab
+2026-07-19T20:56:18.922Z snapshot (kickoff-window-open) written: snapshots/1784494578921-kickoff-window-open.json
+2026-07-19T20:56:19.981Z snapshot (gamestate-1) written: snapshots/1784494579980-gamestate-1.json
+2026-07-19T20:56:20.375Z fixture proof captured (gamestate-1); GameState=1
