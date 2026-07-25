@@ -71,9 +71,14 @@ below for what changed most recently and exactly where to pick up.
   - coverage: 5 USDC, premium: 4.241692 USDC
   - policy_escrow: `FfXeHt7zCiD7jY3rYK6Tg9TBuu1x4ZBK2uQPV48SpTGT` (5 USDC)
   - payout_authority: `CarQShkY6uY8HvCD392uaevcttP4gpn55D61UMkpKZox`
-- **Expected settle outcome**: WIN_AWAY is true (P1 4 < P2 6), WIN_HOME
+- ~~**Expected settle outcome**: WIN_AWAY is true (P1 4 < P2 6), WIN_HOME
   is false → **expire branch**: escrow 5 USDC returns to vault reserve;
-  no payout to holder ATA. Real on-chain state transition either way.
+  no payout to holder ATA. Real on-chain state transition either way.~~
+  **WRONG — corrected 2026-07-25.** `settle_policy` has no expire branch.
+  It is the payout path only and aborts with `TxlinePredicateRejected`
+  (6031) when the predicate is false. Closing out a policy whose outcome
+  did not occur is `expire_policy`, a separate instruction, time-gated on
+  `expires_at` (2026-08-16T23:15:54Z for this policy). See the session log.
 
 ---
 
@@ -363,12 +368,71 @@ Nothing was committed. `git status` shows:
 6. Before firing a real settle tx, confirm with the operator. Escrow
    movement is irreversible.
 
+## Session log — 2026-07-25 (late) — Gate 6 built, and what it revealed
+
+**Caller keypair.** This VPS had no Solana secret at all (only
+`.secrets/txline-devnet.json`); `gate2-solana.json` and `~/.config/solana/id.json`
+live on the laptop. `settle_policy` needs only a funded signer — not the holder,
+and the payout still routes to the policy's own `payout_authority` — so
+`scripts/gate6-create-caller.mjs` mints and airdrops a local one. Created
+`5wm3XiKk4LnHfZLu524i4g2toHwsQeS5CkVE1nxRU8WV`, funded 1 SOL from the devnet
+faucet. No secret was copied between machines.
+
+**New files:** `bridge/settlement_payload.mjs` (shared payload builder, so the
+negative test tampers with exactly the payload the real path submits),
+`scripts/gate6-settle-policy.mjs`, `scripts/gate6-tamper-negative.mjs`,
+`scripts/gate6-expire-policy.mjs`, `scripts/gate6-create-caller.mjs`.
+New npm scripts: `caller:gate6`, `settle:gate6`, `expire:gate6`, `verify:gate6`.
+Both write-capable scripts simulate by default and require `GATE6_CONFIRM=yes`.
+
+**THE BIG CORRECTION.** `settle_policy` has no expire branch. It is the payout
+path only: it verifies the TxLINE proof by CPI and pays out if the predicate
+holds, otherwise it aborts with `TxlinePredicateRejected` (6031).
+`expire_policy` is a separate instruction — no proof, no args, gated purely on
+`expires_at` by `PolicyNotExpired` (6022). Everything in the old blueprint that
+said "expire branch" was wrong.
+
+**Gate 6.5 negative test PASSES 8/8** (`npm run verify:gate6`) and is the real
+evidence Gate 6 has. It works because the two rejections differ:
+
+- authentic proof → TxLINE CPI completes and returns a verdict → 6031.
+  *Reaching 6031 at all proves the proof verified on-chain.*
+- one bit flipped in `mainTreeProof[0].hash` → `InvalidMainTreeProof`, raised
+  **inside** the CPI before any predicate evaluation.
+- proved stat value forged (England 6 → 0) → `InvalidStatProof`.
+
+The payload shape is also confirmed correct: the instruction consumed 222,156 CU
+and reached predicate evaluation, impossible unless `StatValidationInput`
+serialized exactly right.
+
+**What is blocked, and it is not a code problem.** The bound policy insures
+WIN_HOME on a match that finished 4–6 (WIN_AWAY):
+
+- `settle_policy` can never close it — no payout exists to make.
+- `expire_policy` is 22 days out — `expires_at` is **2026-08-16T23:15:54Z**.
+  Simulated: the only obstacle is the clock.
+- The payout path cannot be demonstrated without a policy whose predicate comes
+  true, and issuance needs odds fresh inside the 15-minute on-chain window.
+  Checked live this session: the dev snapshot carries 9 fixtures, earliest
+  kickoff 2026-09-23, and **none is being served a 1X2 packet yet**. Nothing is
+  bindable today. The feed starts streaming 1X2 near kickoff.
+
+So Gate 6 is written up in EVIDENCE.md as **PARTIAL**, honestly: verification
+proven, state transition not claimed.
+
+**Decision needed from the operator** (see the three options in the chat
+summary): wait ~22 days for the expiry transition, wait ~60 days for a bindable
+fixture to prove the payout path, or ship Gate 6 as PARTIAL and move to Gate 4.
+
+---
+
 ## What is genuinely left, in priority order
 
-1. **Gate 6.3–6.6** — `gate6-settle-policy.mjs` (simulate first; only fire on
-   `GATE6_CONFIRM=yes` **and** operator sign-off), `gate6-verify-settlement.mjs`,
-   `gate6-tamper-negative.mjs`, then the EVIDENCE.md section. Blueprint and
-   payload shape are both written down above; nothing is blocked on research.
+1. **Gate 6 close-out** — depends on the operator decision above. The scripts are
+   written and dry-run green; what is missing is a chain state transition that
+   cannot happen today. `gate6-verify-settlement.mjs` (6.4) is deliberately not
+   written yet: there is no settlement to verify, and writing a verifier for an
+   event that has not happened is how fake evidence gets born.
 2. **Gate 4, entirely** — `mcp/server.mjs`, `skills/broker/SKILL.md`,
    `mcp/README.md`, `scripts/gate4-verify.mjs`, `docs/GATE4_TRANSCRIPT.md`.
    Needs `@modelcontextprotocol/sdk` added. Zero lines written so far.

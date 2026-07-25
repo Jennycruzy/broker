@@ -12,7 +12,11 @@
     "dashboard": "node web/server.mjs",
     "test:gate1": "node --test server/*.test.mjs",
     "wallets:gate1": "node scripts/create-gate1-wallets.mjs",
-    "probe:gate6": "node scripts/gate6-probe-scores.mjs"
+    "probe:gate6": "node scripts/gate6-probe-scores.mjs",
+    "caller:gate6": "node scripts/gate6-create-caller.mjs",
+    "settle:gate6": "node scripts/gate6-settle-policy.mjs",
+    "expire:gate6": "node scripts/gate6-expire-policy.mjs",
+    "verify:gate6": "node scripts/gate6-tamper-negative.mjs"
   },
   "dependencies": {
     "@anchor-lang/core": "1.0.2",
