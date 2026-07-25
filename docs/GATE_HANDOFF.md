@@ -10,7 +10,10 @@ is either code you can run or a chain state you can independently refetch.
 
 **Last updated: 2026-07-25, end of session.**
 
-> **STATUS: Gates 0–4 and 6 are green. Gate 5 was never in scope here.**
+> **STATUS: Gates 0–4 and 6 are green. Gate 5 is unknown — the plan file
+> (`.claude/plans/pure-wiggling-waffle.md`) is not on this host, and the only
+> trace of Gate 5 was a deleted README comment reading "Gate 4/5". Check the
+> laptop before assuming it does not exist.**
 > `make verify` passes end to end. The sections below are kept for their
 > archaeology — the payload shapes, the corrections, the reasoning — but the
 > "what is LEFT" lists in them are **stale**. The accurate remaining list is:

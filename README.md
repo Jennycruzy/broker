@@ -137,7 +137,15 @@ Pull any one link and the chain breaks. That is the design.
 make verify
 ```
 
-Prints PASS/FAIL per claim in plain English: the 402 challenge is real, the CCTP route executes, the policy binds with validated odds, the MCP tools hit live endpoints, the skill installs clean, the verification package resolves from the public registry, and **settlement rejects a tampered proof.**
+Prints PASS/FAIL per claim in plain English. What it re-runs live, every time:
+
+- the x402 402 challenge is real and issues no authorization without payment
+- the MCP tools agree with the desk's own HTTP answers and with Solana devnet
+- **settlement rejects a tampered proof** — a flipped bit and a forged scoreline are both rejected on-chain, with different errors than an authentic proof
+- the recorded settlement still reconciles against live chain state
+- the pricing math is byte-exact against SURETY's Rust test vector
+
+What it does **not** re-run, because these are one-time on-chain events that cannot be repeated on demand: the CCTP burn/mint route (Gate 2), and the odds-validated policy bind (Gate 3, which needs a signed odds packet under 15 minutes old — so it needs a match in progress). Those are evidenced by transaction hashes you can check yourself in [EVIDENCE.md](./EVIDENCE.md), not by this command.
 
 Full gate-by-gate evidence — including every self-audit and every unverified item — is in [EVIDENCE.md](./EVIDENCE.md). Integration friction is logged as we hit it in [docs/FRICTION_LOG.md](./docs/FRICTION_LOG.md), with the upstream issues we filed linked there.
 
