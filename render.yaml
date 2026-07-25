@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: broker-dashboard
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run dashboard
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NODE_VERSION
+        value: 22.23.1
+      - key: SURETY_RPC_ENDPOINT
+        value: https://api.devnet.solana.com

@@ -65,6 +65,33 @@ body {
 .lede { color: var(--text-secondary); font-size: 15px; max-width: 860px; margin: 26px 0 26px; }
 .lede strong { color: var(--text-primary); }
 
+/* ---------- product ownership / architecture ---------- */
+.stack {
+  margin: 0 0 26px; padding: 18px; border: 1px solid rgba(57,135,229,.32);
+  border-radius: var(--radius); background: rgba(57,135,229,.055);
+}
+.stack-title { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-bottom: 14px; }
+.stack-title span { font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.stack-title small { color: var(--text-muted); }
+.flow { display: flex; align-items: stretch; gap: 8px; }
+.flow-step {
+  min-width: 0; flex: 1; padding: 11px 10px; border-radius: 10px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.flow-step b { font-size: 12px; letter-spacing: .07em; }
+.flow-step span { font-size: 11px; line-height: 1.35; color: var(--text-secondary); }
+.broker-step { border: 1px solid rgba(57,135,229,.42); background: rgba(57,135,229,.12); }
+.infra-step { border: 1px solid var(--line-strong); background: var(--surface-1); }
+.flow-arrow { display: grid; place-items: center; color: var(--text-muted); }
+.stack-note { margin: 13px 0 0; color: var(--text-secondary); font-size: 12px; }
+.stack-note b { color: #fff; }
+@media (max-width: 900px) {
+  .stack-title { display: block; }
+  .stack-title small { display: block; margin-top: 4px; }
+  .flow { display: grid; grid-template-columns: 1fr; }
+  .flow-arrow { transform: rotate(90deg); height: 12px; }
+}
+
 /* ---------- match grid ---------- */
 .matches { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 780px) { .matches { grid-template-columns: 1fr; } }
@@ -148,6 +175,7 @@ body {
 .badge-open .dot, .badge-triggered .dot, .badge-expired .dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
 .vaultline { margin-top: 16px; font-size: 12px; color: var(--text-muted); font-family: var(--mono); }
 .vaultline b { color: var(--text-secondary); }
+.infra-label { color: var(--accent); font-family: var(--font); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 @media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); } }
 .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }

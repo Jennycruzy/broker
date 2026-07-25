@@ -83,7 +83,13 @@ Note what is Injective-native: three of the four technologies — **x402, MCP Se
 
 **Why the split exists:** insurance always separates distribution from capital. The desk goes where the customers are — Injective, where the agents and the agent-payment rail live. The capital goes where the settlement primitive is. CCTP is the wire between them, exactly as it is between London and Bermuda.
 
-**Named components, for the curious:** the vault and settlement program is **SURETY** (Solana devnet, vault `9npibs7NyjhgWrG5muCFbLRCDoVxMiWWEfp2yMXhUNyF`). The World Cup data is **TxLINE** — cryptographically signed, Merkle-anchored match and odds feeds. BROKER consumes its verification layer as a public package, `@surety-tx/txline-verify@0.1.0`, installed from the npm registry like any other dependency.
+**Who built what:** **BROKER** is the agent-facing desk, MCP tool surface, x402
+payment flow, CCTP routing, and lifecycle orchestration in this repository.
+**SURETY** is the integrated on-chain underwriting ledger on Solana: it holds
+capital, locks escrow, checks policy terms, and enforces settlement. **TxLINE**
+is the integrated data layer supplying signed odds and Merkle-anchored match
+results. In one line: *SURETY is the underwriting ledger; BROKER is the broker,
+payment rail, and agent workflow built on top of it.*
 
 **Networks, stated plainly:** Injective **testnet** for x402 and the CCTP burn. Solana **devnet** for the vault, the mint, and settlement. No mainnet claims anywhere in this repo.
 
@@ -181,6 +187,11 @@ curl --fail http://127.0.0.1:8787/healthz
 It is a Node service because `/api/live` performs server-side chain and feed
 reads. Host it on a VPS behind Nginx or Caddy rather than uploading
 `web/public/` to static hosting. See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
+For a fast public demo, the checked-in `render.yaml` deploys both the dashboard
+and `/api/live` as one Render Web Service.
+
+For recording narration and the exact SURETY/BROKER distinction, see
+[docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md).
 
 ## Roadmap
 

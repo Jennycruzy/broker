@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BROKER — Live World Cup Coverage</title>
+  <title>BROKER — Agent-Native Insurance</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body class="viz-root">
@@ -25,7 +25,26 @@
       </div>
     </header>
 
-    <p class="lede">Autonomous agents carry World Cup exposure with no way to hedge it. BROKER sells <strong>risk transfer</strong>: an agent pays a premium over x402 and walks away with collateralized coverage — priced live from cryptographically signed odds, settled on-chain. This board reads the <strong>live TxLINE feed</strong> and reproduces the deployed SURETY vault's on-chain premium math.</p>
+    <p class="lede"><strong>BROKER is the agent-facing insurance desk.</strong> It gives an agent MCP tools to request coverage, collects the premium over x402 on Injective, routes USDC through CCTP, and coordinates an on-chain policy. This demo replays the exact signed World Cup packets captured during the tournament and reads the resulting policy directly from Solana devnet.</p>
+
+    <section class="stack" aria-label="BROKER architecture">
+      <div class="stack-title">
+        <span>What BROKER built</span>
+        <small>SURETY and TxLINE are integrated infrastructure, not the product UI.</small>
+      </div>
+      <div class="flow">
+        <div class="flow-step broker-step"><b>AI AGENT</b><span>asks BROKER to hedge exposure</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step broker-step"><b>BROKER</b><span>MCP · quote · x402 payment · orchestration</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step broker-step"><b>CCTP</b><span>moves premium to Solana</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step infra-step"><b>SURETY</b><span>locks capital and enforces payout</span></div>
+        <div class="flow-arrow">←</div>
+        <div class="flow-step infra-step"><b>TxLINE</b><span>supplies signed odds and result proofs</span></div>
+      </div>
+      <p class="stack-note"><b>Simple version:</b> SURETY is the underwriting ledger. BROKER is the broker, payment rail, and agent workflow built on top of it.</p>
+    </section>
 
     <section class="matches" id="matches">
       <!-- match cards injected here -->
@@ -36,8 +55,9 @@
     <section class="policy" id="policy"><!-- bound policy injected --></section>
 
     <footer class="foot">
-      <span>Live odds via <strong>TxLINE</strong> — signed, Merkle-anchored 1X2 feeds.</span>
-      <span>Premium reproduces the on-chain <strong>SURETY</strong> quote (byte-exact vs the program's Rust vector).</span>
+      <span><strong>BROKER</strong>: agent tools, payment, cross-chain routing and orchestration.</span>
+      <span><strong>SURETY</strong>: integrated Solana underwriting and settlement program.</span>
+      <span><strong>TxLINE</strong>: integrated signed odds and result proofs.</span>
       <span>Injective <strong>testnet</strong> · Solana <strong>devnet</strong> · no mainnet claims.</span>
       <span id="asOf"></span>
     </footer>

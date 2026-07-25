@@ -15,4 +15,5 @@ if [ -x "$REPO_ROOT/.runtime/bin/node" ]; then
 fi
 
 export PORT="${PORT:-8787}"
+export HOST="${HOST:-127.0.0.1}"
 exec "$NODE_BIN" web/server.mjs

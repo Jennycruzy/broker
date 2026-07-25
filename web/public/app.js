@@ -51,7 +51,7 @@ function matchCard(f) {
 
   const quoteHtml = f.quote && !f.quote.unavailable
     ? `<div class="quote${f.bindable ? "" : " stale"}">
-        <div class="q-l"><b>BROKER quote · ${esc(f.home)} win</b><br>cover <b>${fmtUsdc(f.quote.coverageUsdc)} USDC</b> · priced from signed odds @ ${fmtPct(f.quote.probabilityPpm)} · vault ${(f.quote.utilizationBps / 100).toFixed(1)}% utilised</div>
+        <div class="q-l"><b>BROKER coverage quote · ${esc(f.home)} win</b><br>cover <b>${fmtUsdc(f.quote.coverageUsdc)} USDC</b> · TxLINE probability ${fmtPct(f.quote.probabilityPpm)} · underwriter ${(f.quote.utilizationBps / 100).toFixed(1)}% utilised</div>
         <div class="prem"><div class="big">${fmt6(f.quote.premiumUsdc)}</div><div class="sub">USDC PREMIUM · ${f.bindable ? "via x402" : "indicative"}</div></div>
       </div>`
     : `<div class="quote"><div class="q-l">quote unavailable — ${esc(f.quote?.unavailable ?? "no vault state")}</div></div>`;
@@ -99,12 +99,12 @@ function policyPanel(p, vault) {
     : `<div class="stat"><div class="k">Locked in escrow</div><div class="v">${fmtUsdc(p.escrowUsdc)}</div></div>`;
 
   const vaultLine = vault
-    ? `<div class="vaultline">Vault ${esc(vault.address.slice(0, 8))}… · capital <b>${fmtUsdc(vault.totalCapitalUsdc)}</b> USDC · free <b>${fmtUsdc(vault.freeReservesUsdc)}</b> · locked <b>${fmtUsdc(vault.lockedLiabilitiesUsdc)}</b> · ${vault.policyCount} ${vault.policyCount === 1 ? "policy" : "policies"} written</div>`
+    ? `<div class="vaultline"><span class="infra-label">UNDERWRITING INFRASTRUCTURE · SURETY</span><br>Vault ${esc(vault.address.slice(0, 8))}… · capital <b>${fmtUsdc(vault.totalCapitalUsdc)}</b> USDC · free <b>${fmtUsdc(vault.freeReservesUsdc)}</b> · locked <b>${fmtUsdc(vault.lockedLiabilitiesUsdc)}</b> · ${vault.policyCount} ${vault.policyCount === 1 ? "policy" : "policies"} written</div>`
     : "";
 
   return `<div class="pcard">
     <div class="p-top">
-      <h3>Policy state, read from chain &nbsp;<small>SURETY vault · Solana devnet</small></h3>
+      <h3>BROKER policy receipt &nbsp;<small>enforced by SURETY · read from Solana devnet</small></h3>
       <span class="${STATUS_CLASS[p.status] ?? "badge-open"}"><span class="dot"></span>${esc(p.status.toUpperCase())}</span>
     </div>
     <div class="stats">
@@ -115,10 +115,10 @@ function policyPanel(p, vault) {
     </div>
     ${vaultLine}
     <div class="plinks">
-      <a href="${p.links.policy}" target="_blank" rel="noopener">Policy account</a>
-      <a href="${p.links.issueTx}" target="_blank" rel="noopener">issue_policy tx</a>
-      <a href="${p.links.x402Tx}" target="_blank" rel="noopener">x402 payment</a>
-      <a href="${p.links.cctpMint}" target="_blank" rel="noopener">CCTP mint</a>
+      <a href="${p.links.x402Tx}" target="_blank" rel="noopener">BROKER x402 payment</a>
+      <a href="${p.links.cctpMint}" target="_blank" rel="noopener">BROKER CCTP route</a>
+      <a href="${p.links.issueTx}" target="_blank" rel="noopener">SURETY issuance tx</a>
+      <a href="${p.links.policy}" target="_blank" rel="noopener">On-chain policy</a>
     </div>
   </div>`;
 }

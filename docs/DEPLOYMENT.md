@@ -11,9 +11,27 @@ HOST=127.0.0.1 PORT=8787 npm run dashboard
 curl --fail http://127.0.0.1:8787/healthz
 ```
 
-For this VPS, keep the application in `/opt/broker`, run it as an unprivileged
-`broker` user with `deploy/broker-dashboard.service`, and put Nginx or Caddy in
-front of `127.0.0.1:8787`. Replace `broker.example.com` in
+## Fastest public demo: Render
+
+The checked-in `render.yaml` deploys the dashboard and `/api/live` together.
+
+1. In Render, choose **New → Blueprint**.
+2. Connect the `Jennycruzy/broker` repository.
+3. Select `main` and apply the detected Blueprint.
+4. Wait for `/healthz` to become healthy.
+5. Use the generated `https://broker-dashboard-....onrender.com` URL in the
+   submission and screen recording.
+
+No persistent disk is needed for the dashboard: its World Cup recordings are
+immutable repository assets and its policy state is read from Solana. Do not
+enable funded bind orchestration on this public demo service or upload wallet
+keys to it.
+
+## Existing VPS
+
+Keep the application in `/opt/broker`, run it as an unprivileged `broker` user
+with `deploy/broker-dashboard.service`, and put Nginx or Caddy in front of
+`127.0.0.1:8787`. Replace `broker.example.com` in
 `deploy/nginx-dashboard.conf`, install TLS, and expose only ports 80/443.
 
 The World Cup cards use proof-checked historical recordings after the live
