@@ -8,6 +8,9 @@ The build strictly follows the anti-fake doctrine: real on-chain evidence,
 no mocks, no synthesized proofs, no hardcoded outcomes. Every claim below
 is either code you can run or a chain state you can independently refetch.
 
+**Last updated: 2026-07-25 19:30 UTC.** See "Session log — 2026-07-25 (evening)"
+below for what changed most recently and exactly where to pick up.
+
 ---
 
 ## What is DONE and green
@@ -200,15 +203,189 @@ Add to `package.json` scripts: `mcp`, `verify:gate4`, `settle:gate6`,
 
 ---
 
+## Session log — 2026-07-25 (evening)
+
+Environment note: this session ran on the **VPS** (`/opt/broker`, Node
+v22.23.1 at `.runtime/bin/node`), not the laptop. The systemd units
+(`broker-dashboard`, `broker-capture-*.timer`) are all active here.
+
+### DONE this session — dashboard now serves real data again
+
+**The bug:** both covered fixtures have been played, so the TxLINE dev feed
+has aged their rows out of `/api/fixtures/snapshot`. The live path failed
+closed (correctly) and every dashboard card rendered "feed unavailable".
+`bridge/txline_replay.mjs` had been written to solve exactly this but was
+never imported by anything.
+
+**New file — `bridge/surety_read.mjs`** (read-only SURETY chain reader).
+Fetches policy / vault / exposure-bucket / validated-odds state from devnet.
+Uses a throwaway keypair for the Anchor provider, so it reads no secret and
+signs nothing. Exports `createReadOnlyProgram`, `readPolicy`, `readVault`,
+`readBucket`, `readValidatedOdds`, `deriveBucket`, `statusLabel`,
+`SURETY_PROGRAM_ID`.
+
+Verified live against devnet this session:
+
+- policy `9APDu…x58L` — status **Open**, coverage 5000000, premium 4241692,
+  escrow `FfXeHt7z…SpTGT` holding 5000000
+- vault `CrnjZE2D…BpqZu` — reserve 11241692, total capital 16241692,
+  free reserves 11241692, locked liabilities 5000000, policy_count 1
+- bucket `BfWUcS9Qmbv5Sys8bNCgzJCQDmxstCnr6QawhUciiAFH` —
+  locked_exposure 5000000, open_policy_count 1
+- **`deriveBucket(vault, bucketHash(18257865n, 0))` reproduces the policy's
+  own `bucket` field exactly.** Seeds are `["bucket", vault, bucket_hash]`
+  under program `3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW`. Confirmed by
+  comparison against chain, not assumed. Bucket accounts do not exist until
+  first written, so `readBucket` returns `{exists:false, lockedExposure:0n}`
+  rather than throwing.
+
+**`bridge/txline_replay.mjs`** — its header claimed the recorded proofs
+"still verify against the packet"; that claim is now *enforced*, not
+asserted. `fetchLatestFullMatchOdds` runs `assertProofMatchesPacket` and
+`fetchFixtureSnapshot` runs `assertAuthenticFixtureProofShape` — the same
+checks the live path runs. Edit `packets.jsonl` on disk and replay fails
+closed instead of serving it.
+
+**`web/server.mjs`** — rewritten:
+
+- Live-first, replay-fallback per fixture. A reachable live row always wins,
+  so replay can never mask a live regression.
+- Every card carries `source` ("live" | "replay"), `recordedAt`, `liveError`,
+  and `bindable`. `bindable` is just `source === "live" && fresh` against the
+  same `ODDS_FRESHNESS_MS` SURETY enforces — replayed odds are unbindable by
+  construction, with no special case.
+- Team names, kickoff, and competition now come from the feed row. Only the
+  flag emoji stay local, so a card cannot disagree with its own data.
+- **Removed the hardcoded `POLICY` and `VAULT` literals.** Status, coverage,
+  premium, escrow balance, and vault accounting are refetched from devnet on
+  every poll. This was going to make the dashboard lie the moment Gate 6
+  settles — it would still have read `status: "Open"`.
+- The displayed quote is priced from the vault's real on-chain terms and the
+  real bucket exposure, not restated constants.
+- The scoreline shown is **only** the Merkle-proved full-time result from
+  `data/recordings/<id>/full-time-result.json`. The odds feed's fixture rows
+  never advance their score fields, so anything else would have been a guess.
+
+**`web/public/app.js` + `styles.css`** — render the above: a `replay` feed
+state distinct from `feed down` (amber, not red — it is real signed data,
+just not fresh), an "indicative" rather than "via x402" premium label when
+unbindable, a proved-outcome line, and policy badges that track the on-chain
+`PolicyStatus` enum (Open / Triggered / Expired).
+
+**Verified end-to-end** — `systemctl restart broker-dashboard`, then
+`GET /api/live` on :8787 returns, with `onchainError: null`:
+
+| fixture | source | state | proved result | indicative premium |
+|---|---|---|---|---|
+| 18257865 France v England | replay | FULL_TIME | **WIN_AWAY 4–6** | 0.038108 USDC |
+| 18257739 Spain v Argentina | replay | FULL_TIME | **WIN_HOME 1–0** | 0.430935 USDC |
+
+### Gate 6 research done — no code written yet
+
+`scripts/gate6-settle-policy.mjs` still does not exist. What was established
+this session, so the next session does not have to re-derive it:
+
+**`settle_policy` accounts, from the vendored IDL** (all `accountsStrict`):
+`caller` (signer), `vault` (w), `asset_mint`, `reserve` (w), `bucket` (w),
+`policy` (w), `policy_escrow` (w), `payout_account` (w), `txline_program`
+(pinned to `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J` by the IDL),
+`daily_scores_merkle_roots`, `token_program`.
+
+**Single arg `payload: StatValidationInput`** — Anchor camelCases these:
+
+```
+ts               i64
+fixtureSummary   ScoresBatchSummary { fixtureId i64,
+                                      updateStats { updateCount i32,
+                                                    minTimestamp i64,
+                                                    maxTimestamp i64 },
+                                      eventsSubTreeRoot [u8;32] }
+fixtureProof     Vec<ProofNode>          ← maps from proof.subTreeProof
+mainTreeProof    Vec<ProofNode>
+eventStatRoot    [u8;32]
+stats            Vec<StatLeaf { stat: ScoreStat { key u32, value i32,
+                                                  period i32 },
+                                statProof: Vec<ProofNode> }>
+ProofNode        { hash [u8;32], isRightSibling bool }
+```
+
+⚠️ **Name trap:** TxLINE's JSON calls it `summary.eventStatsSubTreeRoot`;
+the on-chain field is `events_sub_tree_root` → **`eventsSubTreeRoot`**.
+Also `payload.fixtureProof` is fed from the proof's **`subTreeProof`**, not
+from anything named "fixtureProof". Getting either wrong is a silent
+serialization mismatch.
+
+**Error codes to expect** (for 6.5's negative test — read the real one, do
+not assume): 6025 `TxlineProofTooLarge`, 6026 `InvalidProofTimestamp`,
+6027 `InvalidTxlineRoot`, 6031 `TxlinePredicateRejected`,
+6032 `SettlementPredicateMismatch`, 6033 `SettlementNotFinal`, plus the
+TxLINE CPI's own 6003/6004 for tampered sub/main-tree proofs.
+
+**Fallback if TxLINE ages out the scores rows:**
+`data/recordings/<fixtureId>/full-time-result.json` already holds captured
+`p1Proof` and `p2Proof` for both fixtures (captured 2026-07-25 18:19 UTC).
+For 18257865 the two share an identical `summary`, `eventStatRoot`,
+`subTreeProof`, and `mainTreeProof`, so a combined two-stat payload can be
+assembled from them: `stats = [{stat: p1.statsToProve[0], statProof:
+p1.statProofs[0]}, {stat: p2.statsToProve[0], statProof: p2.statProofs[0]}]`.
+Prefer a live `fetchCombinedStatProof` when the feed still serves it.
+
+**Expected outcome is unchanged:** policy predicate is WIN_HOME on 18257865;
+the proved result is WIN_AWAY (4–6), so settlement takes the **expire**
+branch — escrow's 5 USDC returns to the vault reserve (11.241692 →
+16.241692), no payout to the holder ATA. Still a real on-chain state
+transition, still real evidence.
+
+### Uncommitted at end of session
+
+Nothing was committed. `git status` shows:
+
+- **new, unstaged:** `bridge/surety_read.mjs`, `bridge/txline_replay.mjs`,
+  `data/recordings/18257739/full-time-result.json`,
+  `data/recordings/18257865/full-time-result.json`
+- **modified:** `web/server.mjs`, `web/public/app.js`, `web/public/styles.css`,
+  `docs/GATE_HANDOFF.md`, `capture/deploy/env/esp-arg.env` (stop-after 180 →
+  240 min), `package-lock.json`
+- **ignorable:** `data/dashboard.{out,err}.log`
+
+---
+
 ## How to resume
 
 1. `nvm use --lts` (must be Node 20+; local default is 18)
 2. `npm install` (re-applies the patch)
 3. `npm run probe:gate6` — confirms TxLINE + on-chain root are still live
    before touching anything write-side
-4. Pick up at "Gate 6.3 — settle orchestrator" above.
-5. Before firing a real settle tx, confirm with the operator. Escrow
+4. `curl -s localhost:8787/api/live | head -c 400` — confirms the dashboard,
+   the replay path, and the devnet reads are all still healthy.
+5. Pick up at "Gate 6.3 — settle orchestrator" above, using the payload
+   shape recorded in the 2026-07-25 session log.
+6. Before firing a real settle tx, confirm with the operator. Escrow
    movement is irreversible.
+
+## What is genuinely left, in priority order
+
+1. **Gate 6.3–6.6** — `gate6-settle-policy.mjs` (simulate first; only fire on
+   `GATE6_CONFIRM=yes` **and** operator sign-off), `gate6-verify-settlement.mjs`,
+   `gate6-tamper-negative.mjs`, then the EVIDENCE.md section. Blueprint and
+   payload shape are both written down above; nothing is blocked on research.
+2. **Gate 4, entirely** — `mcp/server.mjs`, `skills/broker/SKILL.md`,
+   `mcp/README.md`, `scripts/gate4-verify.mjs`, `docs/GATE4_TRANSCRIPT.md`.
+   Needs `@modelcontextprotocol/sdk` added. Zero lines written so far.
+3. **`Makefile` with a `verify` target.** `README.md:125` tells the reader to
+   run `make verify` and there is no Makefile in the repo. This is currently
+   the most visible broken promise in the project — anyone following the
+   README hits it immediately. Should wire the existing `node --test`
+   suites plus the gate verify scripts into PASS/FAIL output.
+4. **Three `<!-- TODO (Gate 4) -->` blocks in README.md** (lines 42, 48, 99) —
+   clear them only once Gate 4 evidence actually exists.
+5. **Replay tamper negative test.** `bridge/txline_replay.mjs` now fails
+   closed on an edited recording, but nothing asserts that yet. A small test
+   that flips one byte in `packets.jsonl` and asserts the throw would make
+   the claim verifiable rather than merely true.
+6. **`scripts/gate3-issue-policy.mjs` hardcodes `.secrets/gate2-solana.json`**
+   as payer. Thread a `GATE3_HOLDER_KEYPAIR` env var through if the optional
+   bind branch is ever wanted.
 
 ## Files touched in this session
 
@@ -222,6 +399,8 @@ Add to `package.json` scripts: `mcp`, `verify:gate4`, `settle:gate6`,
 
 ## Files NOT yet created (planned)
 
+Still accurate as of 2026-07-25 evening — none of these exist yet:
+
 - `scripts/gate6-settle-policy.mjs`
 - `scripts/gate6-verify-settlement.mjs`
 - `scripts/gate6-tamper-negative.mjs`
@@ -230,3 +409,4 @@ Add to `package.json` scripts: `mcp`, `verify:gate4`, `settle:gate6`,
 - `skills/broker/SKILL.md`
 - `scripts/gate4-verify.mjs`
 - `docs/GATE4_TRANSCRIPT.md`
+- `Makefile` (the `make verify` the README already promises)

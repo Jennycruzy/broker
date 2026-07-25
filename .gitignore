@@ -4,3 +4,4 @@ node_modules/
 HANDOFF.md
 .env
 npm-debug.log*
+data/dashboard.*.log

@@ -54,6 +54,8 @@ body {
 .live-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
 .live-pill.on .dot { background: var(--good); box-shadow: 0 0 0 4px rgba(12,163,12,.18); animation: pulse 2s infinite; }
 .live-pill.off .dot { background: #d03b3b; }
+/* Replay is a real, honest state — signed data, just not fresh. Amber, not red. */
+.live-pill.replay .dot { background: var(--warn); box-shadow: 0 0 0 4px rgba(250,178,25,.16); }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .chip {
@@ -116,7 +118,16 @@ body {
 .proof { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
 .proof .msg { font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 62%; }
 .proof .fresh { color: var(--good); font-weight: 700; }
+.proof .fresh.replay { color: var(--warn); cursor: help; }
 .card-error { color: #e88; font-size: 14px; padding: 20px 0; }
+
+/* An indicative quote must not look like a purchasable one. */
+.quote.stale { background: rgba(250,178,25,.07); border-color: rgba(250,178,25,.28); }
+.settled {
+  margin-top: 12px; padding: 11px 14px; border-radius: 10px; font-size: 12px;
+  color: var(--text-secondary); background: rgba(255,255,255,.035); border: 1px solid var(--line-strong);
+}
+.settled b { color: var(--text-primary); font-family: var(--mono); }
 
 /* ---------- bound policy panel ---------- */
 .policy { margin-top: 22px; }
@@ -127,8 +138,16 @@ body {
 .pcard .p-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
 .pcard h3 { margin: 0; font-size: 16px; letter-spacing: .02em; }
 .pcard h3 small { color: var(--text-muted); font-weight: 500; letter-spacing: 0; }
-.badge-open { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #fff; background: var(--good); padding: 5px 12px; border-radius: 999px; }
-.badge-open .dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+/* Status badges track the on-chain PolicyStatus enum: Open / Triggered / Expired. */
+.badge-open, .badge-triggered, .badge-expired {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+  letter-spacing: .08em; color: #fff; background: var(--good); padding: 5px 12px; border-radius: 999px;
+}
+.badge-triggered { background: var(--home); }
+.badge-expired { background: var(--text-muted); }
+.badge-open .dot, .badge-triggered .dot, .badge-expired .dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+.vaultline { margin-top: 16px; font-size: 12px; color: var(--text-muted); font-family: var(--mono); }
+.vaultline b { color: var(--text-secondary); }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 @media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); } }
 .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
