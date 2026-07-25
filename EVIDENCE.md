@@ -414,3 +414,78 @@ proof's `subTreeProof`, and `summary.eventsSubTreeRoot` is TxLINE's
 5. Fresh state: both write-capable scripts simulate by default and require
    `GATE6_CONFIRM=yes`. The second vault and its policy are reproducible from
    `gate6-create-settlement-vault.mjs` and `gate6-issue-policy-direct.mjs`.
+
+## Gate 4 — Agent tooling: PASS
+
+An MCP server exposing four tools, a self-contained agent skill, and a verifier
+that checks the tools against ground truth rather than against a transcript.
+
+Reproduce: `node scripts/gate4-verify.mjs` — 18/18 pass.
+
+### What was built
+
+- `mcp/server.mjs` — stdio MCP server, four tools: `quote_coverage`,
+  `bind_coverage`, `policy_status`, `vault_solvency`. Configuration is
+  environment-only; no address, URL, or network is baked into the code.
+- `skills/broker/SKILL.md` — the agent skill, in the standard frontmatter+markdown
+  format.
+- `mcp/README.md` — three-line install plus the JSON config form.
+- `scripts/gate4-verify.mjs` — the verifier described below.
+
+### How it is verified
+
+The failure mode worth guarding against is an MCP server that looks correct in a
+transcript while serving its own numbers. So the verifier spawns `mcp/server.mjs`
+as a **real subprocess** and speaks MCP JSON-RPC over stdio — the transport is
+part of what is tested — and starts a **real BROKER desk** on an ephemeral port
+using the same `createApp` the product runs. Each tool response is then compared
+against the thing it claims to report:
+
+| check | result |
+|---|---|
+| MCP handshake, server identifies as `broker` | PASS |
+| exposes exactly the four tools, each with a real description | PASS |
+| `quote_coverage` `quote_id` matches a direct HTTP call to the desk | PASS |
+| premium matches exactly (100000 base units) and `premium_usdc` renders it faithfully | PASS |
+| unpaid `bind_coverage` returns a **real HTTP 402** challenge with actionable x402 requirements | PASS |
+| the challenge demands exactly the quoted premium | PASS |
+| **no bind authorization is issued without payment** | PASS |
+| `policy_status` matches an independent chain read (`Triggered`, 2.000000 USDC, same escrow account) | PASS |
+| `vault_solvency` matches the real SPL reserve balance and vault accounting | PASS |
+| `policy_status` on a non-policy account reports an error rather than inventing state | PASS |
+
+The two chain-reading tools deliberately do **not** ask the desk. Solvency and
+policy status are chain facts; routing them through the desk would only invite
+the desk to shade them.
+
+`bind_coverage` does not report success on an unpaid call. It returns the 402 and
+tells the agent that coverage is not bound until the payment settles — an MCP
+tool that claimed otherwise would be a lie the calling agent could not detect.
+
+### `make verify`
+
+`README.md` has told readers to run `make verify` since the first commit, and
+there was no Makefile. There is now. `make verify` runs the unit tests, the Gate 4
+MCP verification, the Gate 6 negative tests, and the Gate 6 settlement
+verification, and prints a PASS summary. Full green run recorded at build time.
+
+Write-side operations (issue, settle, expire) are deliberately excluded from
+`verify`: they move real escrow and stay gated behind `GATE6_CONFIRM=yes`.
+
+### Self-audit
+
+1. Network cut: every tool reports the failure — "desk unreachable", "could not
+   read policy" — and none falls back to a cached or invented answer.
+2. Corrupt input: a non-policy account returns `isError`, verified as a check.
+3. Escape-hatch grep: no mock, demo flag, or canned tool response. The verifier
+   compares against live HTTP and live chain reads, not fixtures.
+4. Claim-to-code: every row in the table above is a labelled assertion printed by
+   `scripts/gate4-verify.mjs`.
+5. Fresh state: the verifier binds an ephemeral port and spawns its own
+   subprocess; it leaves nothing running and writes nothing on-chain.
+
+### Not claimed
+
+No upstream PR has been opened against `InjectiveLabs/agent-skills` — that needs
+the operator's GitHub identity. No fresh-profile Claude Code run transcript is
+included; `docs/GATE4_TRANSCRIPT.md` does not exist and is not referenced.

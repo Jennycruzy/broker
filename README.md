@@ -39,13 +39,27 @@ BROKER exposes four tools shaped around what an agent actually asks, not endpoin
 
 The demo agent **composes Injective's own MCP server** (33 tools — market data, trading, transfers, bridging) with BROKER's. It opens a World Cup-correlated position through Injective's tools, reads its own exposure, and hedges that exposure through ours — using Injective's flagship as a component rather than imitating its category.
 
-<!-- TODO (Gate 4/5): tool list with signatures, connection instructions, and the agent run log.
-     Do not write a word of this section until the gate evidence exists. -->
+| tool | arguments | costs money? |
+|---|---|---|
+| `quote_coverage` | `fixture`, `outcome`, `coverage_amount` | no — shop freely |
+| `bind_coverage` | + optional `payment_header` | yes — x402 premium |
+| `policy_status` | `policy` | no — reads Solana |
+| `vault_solvency` | `vault?` | no — reads Solana |
+
+Two tools talk to the desk; two read the chain directly, because solvency and policy status are chain facts and routing them through the desk would only invite the desk to shade them. `bind_coverage` does not pretend to have bought anything on an unpaid call — it returns the real 402 challenge for the agent to sign.
+
+Install is three lines; see [mcp/README.md](./mcp/README.md). Verified by `node scripts/gate4-verify.mjs`, which spawns the server as a subprocess, speaks MCP JSON-RPC over stdio, and checks every tool response against the desk's own HTTP answer or an independent chain read — 18/18.
 
 ### Agent Skills — how any agent gets this
-A self-contained skill in the standard markdown format (loads in Claude Code, Codex, Cursor, and Gemini CLI) that teaches an agent when and how to hedge World Cup exposure.
+A self-contained skill in the standard markdown format (loads in Claude Code, Codex, Cursor, and Gemini CLI) that teaches an agent when and how to hedge World Cup exposure: [skills/broker/SKILL.md](./skills/broker/SKILL.md).
 
-<!-- TODO (Gate 4): 3-line install, and the link to the upstream PR against Injective's agent-skills repo. -->
+```bash
+npm install && npm run server &
+claude mcp add broker -- node "$PWD/mcp/server.mjs"
+cp -r skills/broker ~/.claude/skills/
+```
+
+The skill covers the part that actually goes wrong: working out which outcome you are exposed to, checking the underwriter before buying, and never reporting a hedge as in place until the x402 payment has settled.
 
 ---
 
@@ -86,17 +100,15 @@ npm install && npm run server
 # 2. Ask for a quote (free)
 curl -X POST "$BROKER/quote" \
   -H 'content-type: application/json' \
-  -d '{"fixture":18257865,"outcome":"WIN_HOME","coverage":5000000}'
+  -d '{"fixture":"18257865","outcome":"WIN_HOME","coverage_amount":"5000000"}'
 
 # 3. Bind coverage (x402: returns 402, pay, retry with the payment header)
 curl -X POST "$BROKER/bind" \
   -H 'content-type: application/json' \
-  -d '{"fixture":18257865,"outcome":"WIN_HOME","coverage":5000000}'
+  -d '{"fixture":"18257865","outcome":"WIN_HOME","coverage_amount":"5000000"}'
 ```
 
 Or, from an agent: install the skill, connect the MCP server, and say *"I'm exposed to France losing — hedge it."*
-
-<!-- TODO (Gate 4): replace the curl block above with the verified clean-profile install once Gate 4 passes. -->
 
 ---
 
