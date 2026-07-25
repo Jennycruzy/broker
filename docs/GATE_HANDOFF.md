@@ -8,8 +8,22 @@ The build strictly follows the anti-fake doctrine: real on-chain evidence,
 no mocks, no synthesized proofs, no hardcoded outcomes. Every claim below
 is either code you can run or a chain state you can independently refetch.
 
-**Last updated: 2026-07-25 19:30 UTC.** See "Session log — 2026-07-25 (evening)"
-below for what changed most recently and exactly where to pick up.
+**Last updated: 2026-07-25, end of session.**
+
+> **STATUS: Gates 0–4 and 6 are green. Gate 5 was never in scope here.**
+> `make verify` passes end to end. The sections below are kept for their
+> archaeology — the payload shapes, the corrections, the reasoning — but the
+> "what is LEFT" lists in them are **stale**. The accurate remaining list is:
+>
+> 1. `git push origin main` — 4 commits are committed locally and unpushed. The
+>    VS Code `GIT_ASKPASS` credential went stale mid-session; nothing else is
+>    wrong. Run it from a terminal where you are logged in.
+> 2. Upstream PR against `InjectiveLabs/agent-skills` — needs the operator's
+>    GitHub identity. Not claimed anywhere in EVIDENCE.md.
+> 3. `docs/GATE4_TRANSCRIPT.md` — a fresh-profile agent run. Not claimed
+>    anywhere either; the repo does not reference it.
+> 4. The Gate 3 policy stays Open until `expire_policy` becomes callable on
+>    **2026-08-16**. Disclosed in EVIDENCE.md, not hidden.
 
 ---
 
