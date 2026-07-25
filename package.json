@@ -7,10 +7,12 @@
     "node": ">=20"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "server": "node server/index.mjs",
     "dashboard": "node web/server.mjs",
     "test:gate1": "node --test server/*.test.mjs",
-    "wallets:gate1": "node scripts/create-gate1-wallets.mjs"
+    "wallets:gate1": "node scripts/create-gate1-wallets.mjs",
+    "probe:gate6": "node scripts/gate6-probe-scores.mjs"
   },
   "dependencies": {
     "@anchor-lang/core": "1.0.2",
@@ -22,5 +24,8 @@
     "express": "5.1.0",
     "viem": "2.55.2",
     "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "patch-package": "8.0.1"
   }
 }

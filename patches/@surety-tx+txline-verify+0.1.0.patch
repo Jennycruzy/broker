@@ -1,0 +1,13 @@
+diff --git a/node_modules/@surety-tx/txline-verify/dist/txline.js b/node_modules/@surety-tx/txline-verify/dist/txline.js
+index ed9d6fe..2dda733 100644
+--- a/node_modules/@surety-tx/txline-verify/dist/txline.js
++++ b/node_modules/@surety-tx/txline-verify/dist/txline.js
+@@ -1,6 +1,7 @@
+ import assert from "node:assert/strict";
+ import { createHash } from "node:crypto";
+-import { BN, Program } from "@anchor-lang/core";
++import anchorLang from "@anchor-lang/core";
++const { BN, Program } = anchorLang;
+ import { ComputeBudgetProgram, PublicKey } from "@solana/web3.js";
+ // Pinned from txodds/tx-on-chain commit
+ // eba4cb4d578bdb5cfad3c22dfd134f012496e445, devnet IDL v1.5.6.

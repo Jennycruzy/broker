@@ -224,3 +224,106 @@ Append-only observations captured while they occurred.
   `scripts/gate3-issue-policy.mjs` was given a `GATE3_WAIT_MINUTES` poll loop
   that fires issuance the moment a sub-10-minute packet appears. Not a defect —
   an external feed-cadence constraint, disclosed.
+
+## 2026-07-25T16:35Z — `@surety-tx/txline-verify@0.1.0` is unimportable as shipped
+
+- Reproduction (fresh `npm install`, Node 18, 20, or 22 — all identical): any
+  ESM `import` from `@surety-tx/txline-verify` throws
+  `SyntaxError: Named export 'BN' not found. The requested module
+  '@anchor-lang/core' is a CommonJS module`.
+- Root cause: `@surety-tx/txline-verify` is `type: module` and its
+  `dist/txline.js` does `import { BN, Program } from "@anchor-lang/core"`, but
+  `@anchor-lang/core@1.0.2` has no `exports` map and its `main` field resolves
+  to CJS. Node's ESM loader cannot statically extract named exports from a CJS
+  module without an `exports` map, so the import throws before any code runs.
+- Impact: every BROKER script that touches TxLINE on-chain
+  (`gate3-verify-live-proof.mjs`, `gate3-issue-policy.mjs`,
+  `gate3-verify-policy.mjs`, new `gate6-*`) is broken on a clean install. Gate
+  3 evidence stands (those transactions are on-chain and independently
+  refetchable), but the verification scripts as of today do not run.
+- Local fix: `patches/@surety-tx+txline-verify+0.1.0.patch` (via
+  `patch-package`) rewrites the one offending import to the CJS-safe
+  `import anchorLang from "@anchor-lang/core"; const { BN, Program } =
+  anchorLang;`. `npm install` re-applies the patch via a `postinstall` hook.
+- Upstream fix owed: publish `@surety-tx/txline-verify@0.1.1` from
+  `Jennycruzy/surety` with the same one-line change to
+  `packages/txline-verify/src/txline.ts`. Then remove the local patch and
+  pin `^0.1.1`. Filed as followup — not blocking.
+
+## 2026-07-25T16:45Z — TxLINE dev still serves scores for fixture 18257865
+
+- Reproduction: `node scripts/gate6-probe-scores.mjs` (read-only; no chain
+  writes, no keypair required).
+- Result: PASS end-to-end. TxLINE snapshot returned 39 rows including a
+  `game_finalised` action at Seq 1195. Daily-scores-root PDA
+  `C9vY83pzub2a4d3Qve5NuR4cuXc8Yq68fKRRad4xR4bi` is present on devnet, owned
+  by TxLINE program `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J`, with
+  9232 bytes of data.
+- Corrected below: the first version of this probe used statKeys 3001/3002
+  and reported "P1 4, P2 2" — those keys/periods are **not** what
+  `settle_policy` verifies against. See next entry.
+
+## 2026-07-25T18:15Z — WIN_HOME/DRAW/WIN_AWAY predicates require stat keys 1 and 2 at period 100
+
+- On-chain source: `Jennycruzy/surety` `programs/surety_core/src/lib.rs`
+  `strategy_for_policy` clause type 2 calls `require_leaf(payload, 0, 1)`
+  and `require_leaf(payload, 1, 2)`; `require_leaf` asserts
+  `leaf.stat.period == txline::FINAL_PERIOD`. `crates/txline-cpi/src/lib.rs`
+  pins `pub const FINAL_PERIOD: i32 = 100`.
+- Consequence: the on-chain-verifiable full-match goal leaves are
+  `{ key: 1, period: 100 }` and `{ key: 2, period: 100 }`. The snapshot
+  row's `Stats["3001"]/["3002"]` fields are a different, human-facing
+  aggregation that TxLINE never hashes into the merkle tree that
+  `validate_stat_v2` verifies. Submitting them would revert with
+  `SettlementPredicateMismatch`.
+- Reproduction: `GET /api/scores/stat-validation?fixtureId=18257865&seq=1195&statKeys=1,2`
+  against `https://txline-dev.txodds.com` returns
+  `statsToProve: [{key:1,value:4,period:100},{key:2,value:6,period:100}]`.
+- Canonical full-time result for fixture 18257865: **P1 4, P2 6**
+  (`goals_home 4, goals_away 6` in SURETY's naming). Since `4 > 6` is
+  false, `WIN_HOME` evaluates to false → the existing WIN_HOME policy
+  `9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L` will settle to the
+  expire branch (escrow returns to reserve, no payout). A `WIN_AWAY`
+  policy on the same fixture would settle to the payout branch.
+- Fix applied: `bridge/txline_scores.mjs` now exports
+  `FINAL_PERIOD = 100`, `STAT_KEY_FULL_MATCH_P1_GOALS = 1`,
+  `STAT_KEY_FULL_MATCH_P2_GOALS = 2`, and its shape assertion enforces
+  `stat.period === FINAL_PERIOD`. Probe re-run PASSES with correct keys.
+
+## 2026-07-25T18:20Z — Node 18 blocks the pinned Solana stack
+
+- Reproduction: any BROKER script that imports `@solana/web3.js@1.98.4`
+  under Node 18 throws
+  `Error [ERR_REQUIRE_ESM]: require() of ES Module .../rpc-websockets/node_modules/uuid/dist-node/index.js from .../rpc-websockets/dist/index.cjs`.
+- Root cause: `rpc-websockets` (transitive dep of `@solana/web3.js`)
+  ships CJS that `require()`s `uuid@11`, which is ESM-only.
+- Adaptation: installed Node 24.18.0 (current LTS) via nvm. `package.json`
+  already declares `"engines": { "node": ">=20" }` — the constraint was
+  correct; the local shell default (`v18.20.8`) was wrong. All Gate 6
+  scripts now run cleanly under Node 24.
+
+## 2026-07-25T18:25Z — `settle_policy` only needs a funded caller signer
+
+- On-chain source: `programs/surety_core/src/lib.rs` `SettlePolicy` accounts
+  struct — `caller` is the only `Signer`. `payout_account` is constrained
+  by Anchor to `token::authority = policy.payout_authority`, so payout
+  always lands in the policy holder's ATA regardless of who submits.
+- Consequence: any funded devnet keypair can settle the existing open
+  policy `9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L` (5 USDC coverage
+  on vault `CrnjZE2DXMPLtRXJ6MPHaKifEi13qp1vAFn9ohXBpqZu`). We do not
+  need the original policy-holder key to complete Gate 6.
+- Applied: this laptop's default Solana keypair `~/.config/solana/id.json`
+  (`JBe17qhF2zge69dYBDfQfbjcpRUYci5XjjPWoaRosxaz`, 9.87 SOL) is the
+  Gate 6 caller. No new secret file needed for the settle path.
+
+## 2026-07-25T18:30Z — Circle devnet USDC faucet is not programmatically callable
+
+- Reproduction: `POST https://faucet.circle.com/api/faucet` with a JSON
+  body returned HTTP 404 (Next.js `_not-found` page). The public faucet
+  is a Next.js UI behind Google reCAPTCHA v3 (site key
+  `6LcNs_0pAAAAAJuAAa-VQryi8XsocHubBk-YlUy2`).
+- Impact: automating a "fresh keypair → bind fresh policy → settle" flow
+  needs an out-of-band manual USDC top-up step. The Gate 6 settle path
+  itself does not require the caller to hold USDC (see prior entry), so
+  the read-only settle branch is fully automatable; only the bind branch
+  needs manual funding.
