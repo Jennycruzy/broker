@@ -48,7 +48,8 @@ const POLICY_LINKS = {
   policy: `https://explorer.solana.com/address/${POLICY_ACCOUNT}?cluster=devnet`,
   issueTx: "https://explorer.solana.com/tx/4Uq5aW2vsWyv43vZfy3wEi9kd1ivGgnUvJDJuUdyEV3ST6owgutFVuDtfHSucM791V9drPcPFk6RLcghdc8MW3NM?cluster=devnet",
   x402Tx: "https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a",
-  cctpMint: "https://explorer.solana.com/tx/2UNhcfhpuyW1RFHgv81hM9GkC9GRQgvCSUg5dFddonHtuYLZM3FMtd9YgwacaptzmPkVZ65YPptNTrBsNRvnzyHj?cluster=devnet",
+  cctpBurn: "https://testnet.blockscout.injective.network/tx/0x281ef407852ccf4bb34c04f71c70c496e10e6b1479174872115b2d4177c62059",
+  cctpAttestation: "https://iris-api-sandbox.circle.com/v2/messages/29?transactionHash=0x281ef407852ccf4bb34c04f71c70c496e10e6b1479174872115b2d4177c62059",
 };
 const SETTLED_POLICY_ACCOUNT = process.env.BROKER_SETTLED_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG";
 const SETTLEMENT_TX = "2SZFA2gaskxaNLjHy34Z3XomRN93i2zY3nbiQgWQaLizTUwmDDeLREvP2Bquih4JZXyYAmHpmfxLHUWBCVcK7qDg";

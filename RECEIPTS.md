@@ -15,7 +15,13 @@ All transactions use Injective testnet or Solana devnet.
   <https://testnet.blockscout.injective.network/tx/0x281ef407852ccf4bb34c04f71c70c496e10e6b1479174872115b2d4177c62059>
 - Solana mint:
   <https://explorer.solana.com/tx/aFzY4dorCBd28epYUdbLKZUozTi7TfshMQxTg42muLCiKq989L7NgyDs9ZQquggPefagkcC7eNRUVhSMtDG47CJ?cluster=devnet>
+- Circle attestation:
+  <https://iris-api-sandbox.circle.com/v2/messages/29?transactionHash=0x281ef407852ccf4bb34c04f71c70c496e10e6b1479174872115b2d4177c62059>
 - Route: Injective domain 29 to Solana domain 5.
+- Solana devnet has pruned the historical mint transaction from its public RPC
+  history. The signature is retained above as the original receipt; the
+  Injective burn remains available and Circle's API still reports the message
+  attestation as `complete`.
 
 ## Odds-validated policy
 

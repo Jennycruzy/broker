@@ -119,7 +119,8 @@ function policyPanel(p, vault) {
     ${lifecycleNote}
     <div class="plinks">
       <a href="${p.links.x402Tx}" target="_blank" rel="noopener">BROKER x402 payment</a>
-      <a href="${p.links.cctpMint}" target="_blank" rel="noopener">BROKER CCTP route</a>
+      <a href="${p.links.cctpBurn}" target="_blank" rel="noopener">CCTP burn · Injective</a>
+      <a href="${p.links.cctpAttestation}" target="_blank" rel="noopener">Circle attestation · complete</a>
       <a href="${p.links.issueTx}" target="_blank" rel="noopener">SURETY issuance tx</a>
       <a href="${p.links.policy}" target="_blank" rel="noopener">On-chain policy</a>
     </div>
