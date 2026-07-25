@@ -11,7 +11,7 @@
 NODE ?= node
 SHELL := /bin/bash
 
-.PHONY: help verify test verify-mcp verify-settlement verify-negative probe dashboard server clean-caller
+.PHONY: help verify test verify-mcp verify-settlement verify-negative probe dashboard server issue settle expire clean-caller
 
 help:
 	@echo "make verify            run every non-destructive check (this is what the README means)"
@@ -22,6 +22,9 @@ help:
 	@echo "make probe             read-only TxLINE + devnet health check"
 	@echo "make server            start the BROKER x402 desk"
 	@echo "make dashboard         start the demo match board"
+	@echo "make issue             simulate direct policy issuance (GATE6_CONFIRM=yes sends)"
+	@echo "make settle            simulate proof-gated settlement (GATE6_CONFIRM=yes sends)"
+	@echo "make expire            simulate expiry (GATE6_CONFIRM=yes sends)"
 
 # Ordered cheapest-first so a failure surfaces fast.
 verify: test verify-mcp verify-negative verify-settlement
@@ -65,3 +68,12 @@ server:
 
 dashboard:
 	@$(NODE) web/server.mjs
+
+issue:
+	@$(NODE) scripts/gate6-issue-policy-direct.mjs
+
+settle:
+	@$(NODE) scripts/gate6-settle-policy.mjs
+
+expire:
+	@$(NODE) scripts/gate6-expire-policy.mjs

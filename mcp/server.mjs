@@ -125,7 +125,9 @@ server.registerTool(
             "Coverage is NOT bound until the payment settles on Injective.",
         });
       }
-      if (response.status !== 200) return fail(`bind failed (HTTP ${response.status})`, { response: body });
+      if (response.status !== 200 && response.status !== 202) {
+        return fail(`bind failed (HTTP ${response.status})`, { response: body });
+      }
       return ok(body);
     } catch (error) {
       return fail(`BROKER desk unreachable at ${BROKER_URL}: ${error.message}`);

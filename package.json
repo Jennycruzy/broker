@@ -21,7 +21,8 @@
     "vault:gate6": "node scripts/gate6-create-settlement-vault.mjs",
     "settled:gate6": "node scripts/gate6-verify-settlement.mjs",
     "mcp": "node mcp/server.mjs",
-    "verify:gate4": "node scripts/gate4-verify.mjs"
+    "verify:gate4": "node scripts/gate4-verify.mjs",
+    "test:mcp-payment-contract": "node --test server/mcp_payment_contract.test.mjs"
   },
   "dependencies": {
     "@anchor-lang/core": "1.0.2",

@@ -27,7 +27,7 @@ test("unpaid bind returns the package's x402 challenge without network access", 
     const response = await fetch(`${baseUrl}/bind`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ fixture: "FRA v ENG", outcome: "France", coverage_amount: "1000000" }),
+      body: JSON.stringify({ fixture: "FRA v ENG", outcome: "WIN_HOME", coverage_amount: "1000000" }),
     });
     assert.equal(response.status, 402);
     assert.ok(response.headers.get("payment-required"));
@@ -43,7 +43,7 @@ test("invalid bind input is rejected before payment", async () => {
     const response = await fetch(`${baseUrl}/bind`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ fixture: "FRA v ENG", outcome: "France", coverage_amount: "0" }),
+      body: JSON.stringify({ fixture: "FRA v ENG", outcome: "WIN_HOME", coverage_amount: "0" }),
     });
     assert.equal(response.status, 400);
     assert.equal((await response.json()).error, "invalid_coverage_request");

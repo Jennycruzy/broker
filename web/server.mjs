@@ -29,6 +29,7 @@ import { normalizedProbabilityPpm, validatedQuoteTerms, bucketHash, OUTCOMES } f
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(HERE, "public");
 const PORT = Number(process.env.PORT ?? 8787);
+const HOST = process.env.HOST ?? "127.0.0.1";
 
 // The two World Cup fixtures BROKER covers, confirmed live from the feed. Only
 // the flags are local decoration — team names, kickoff, and state come from the
@@ -245,6 +246,11 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify(body));
       return;
     }
+    if (url.pathname === "/healthz") {
+      res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
+      res.end(JSON.stringify({ ok: true }));
+      return;
+    }
     const rel = url.pathname === "/" ? "index.html" : url.pathname.replace(/^\/+/, "");
     const file = path.join(PUBLIC, path.normalize(rel));
     if (!file.startsWith(PUBLIC)) { res.writeHead(403); res.end("forbidden"); return; }
@@ -258,4 +264,4 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log(`BROKER dashboard on http://localhost:${PORT}`));
+server.listen(PORT, HOST, () => console.log(`BROKER dashboard on http://${HOST}:${PORT}`));

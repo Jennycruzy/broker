@@ -1,0 +1,25 @@
+[Unit]
+Description=BROKER proof dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/broker
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=8787
+Environment=SURETY_RPC_ENDPOINT=https://api.devnet.solana.com
+ExecStart=/usr/bin/env node web/server.mjs
+Restart=on-failure
+RestartSec=5
+User=broker
+Group=broker
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/broker/data
+
+[Install]
+WantedBy=multi-user.target

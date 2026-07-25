@@ -40,9 +40,10 @@ Everything is environment-driven; no address or network is baked into the code.
 | `SURETY_RPC_ENDPOINT` | `https://api.devnet.solana.com` | Solana RPC for the two chain-reading tools |
 | `BROKER_DEFAULT_VAULT` | *(unset)* | vault used by `vault_solvency` when the agent does not name one |
 
-The desk itself needs `PORT`, `PREMIUM_RATE_BPS`, and either a local facilitator
-key (`X402_FACILITATOR_PRIVATE_KEY` + `INJECTIVE_EVM_RPC_URL`) or a remote
-facilitator URL. See the repo root README.
+The desk uses `PORT` (default `8080`) and needs `PREMIUM_RATE_BPS`, plus either a
+local facilitator key (`X402_FACILITATOR_PRIVATE_KEY` +
+`INJECTIVE_EVM_RPC_URL`) or both `X402_FACILITATOR_URL` and `X402_PAY_TO`.
+See the repo root README.
 
 ## The tools
 
@@ -54,10 +55,11 @@ x402-gated. Called without `payment_header` it returns a real HTTP 402 challenge
 describing what to pay, on which asset and network. Sign it and call again with
 the authorization as `payment_header`.
 
-The tool does not pretend to have bought anything on the unpaid call. Coverage is
-bound only when the payment settles on Injective and a `bind_authorization` comes
-back — an MCP tool that reported success off a 402 would be a lie the calling
-agent could not detect.
+The tool does not pretend to have bought anything on the unpaid call. A settled
+payment produces a `payment_receipt` and, when orchestration is configured, a
+durable bind job. Coverage is bound only when that job reaches `policy_bound`
+and carries the Solana policy address. Payment settlement by itself is not a
+policy.
 
 **`policy_status`** `{ policy }` — reads the policy account from Solana devnet:
 `Open`, `Triggered` or `Expired`, plus coverage, premium and the balance still

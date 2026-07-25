@@ -5,7 +5,7 @@ const decimalInteger = z.string().regex(/^[1-9][0-9]*$/, "must be a positive int
 
 export const coverageRequestSchema = z.object({
   fixture: z.string().trim().min(1).max(160),
-  outcome: z.string().trim().min(1).max(160),
+  outcome: z.enum(["WIN_HOME", "DRAW", "WIN_AWAY"]),
   coverage_amount: decimalInteger,
 }).strict();
 

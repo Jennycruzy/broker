@@ -3,7 +3,7 @@ import test from "node:test";
 import { parsePremiumRateBps, quoteCoverage } from "./coverage.mjs";
 
 test("quote calculation is deterministic and rounds premium upward", () => {
-  const input = { fixture: "FRA v ENG", outcome: "France", coverage_amount: "1000001" };
+  const input = { fixture: "FRA v ENG", outcome: "WIN_HOME", coverage_amount: "1000001" };
   const first = quoteCoverage(input, 250n);
   const second = quoteCoverage(input, 250n);
   assert.deepEqual(first, second);
@@ -11,8 +11,15 @@ test("quote calculation is deterministic and rounds premium upward", () => {
 });
 
 test("invalid and zero coverage fail closed", () => {
-  assert.throws(() => quoteCoverage({ fixture: "FRA v ENG", outcome: "France", coverage_amount: "0" }, 250n));
-  assert.throws(() => quoteCoverage({ fixture: "", outcome: "France", coverage_amount: "100" }, 250n));
+  assert.throws(() => quoteCoverage({ fixture: "FRA v ENG", outcome: "WIN_HOME", coverage_amount: "0" }, 250n));
+  assert.throws(() => quoteCoverage({ fixture: "", outcome: "WIN_HOME", coverage_amount: "100" }, 250n));
+});
+
+test("unsupported outcomes fail closed before payment", () => {
+  assert.throws(
+    () => quoteCoverage({ fixture: "18257865", outcome: "FRANCE_WINS", coverage_amount: "1000000" }, 500n),
+    /Invalid enum value/,
+  );
 });
 
 test("premium rate must be explicit and bounded", () => {

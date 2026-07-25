@@ -24,6 +24,7 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertProofMatchesPacket, assertAuthenticFixtureProofShape } from "@surety-tx/txline-verify";
+import { recordedProof, scorelineFrom } from "./settlement_payload.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const RECORDINGS = process.env.BROKER_RECORDINGS_DIR
@@ -109,10 +110,20 @@ export async function fetchRecordedFullTimeResult(_session, fixtureId) {
   const file = path.join(recordingDir(fixtureId), "full-time-result.json");
   try {
     const stored = JSON.parse(await readFile(file, "utf8"));
+    const verified = await recordedProof(fixtureId);
+    const provedScoreline = scorelineFrom(verified.proof);
+    if (
+      stored.scoreline?.p1Goals !== provedScoreline.p1Goals
+      || stored.scoreline?.p2Goals !== provedScoreline.p2Goals
+      || stored.seq !== verified.seq
+    ) {
+      throw new Error(`recorded result metadata for fixture ${fixtureId} disagrees with its authenticated stat proofs`);
+    }
     return {
       seq: stored.seq,
-      scoreline: stored.scoreline,
+      scoreline: provedScoreline,
       capturedAt: stored.capturedAt,
+      proofVerified: true,
     };
   } catch (error) {
     if (error.code === "ENOENT") return null;

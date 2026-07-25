@@ -10,7 +10,7 @@
 
 import { readFile } from "node:fs/promises";
 import assert from "node:assert/strict";
-import { BN } from "@anchor-lang/core";
+import anchor from "@anchor-lang/core";
 import { createTxlineSession } from "./txline.mjs";
 import {
   fetchScoresSnapshot,
@@ -22,6 +22,7 @@ import {
 } from "./txline_scores.mjs";
 
 export const STAT_KEYS = [STAT_KEY_FULL_MATCH_P1_GOALS, STAT_KEY_FULL_MATCH_P2_GOALS];
+const { BN } = anchor;
 
 const mapProof = (nodes) => nodes.map((n) => ({ hash: [...n.hash], isRightSibling: n.isRightSibling }));
 
@@ -59,7 +60,7 @@ async function liveProof(fixtureId) {
 // they came from the same batch — same summary, same roots, same tree proofs.
 // Assert that rather than assume it; a mismatch means the recording spans two
 // batches and must not be spliced.
-async function recordedProof(fixtureId) {
+export async function recordedProof(fixtureId) {
   const file = new URL(`../data/recordings/${fixtureId}/full-time-result.json`, import.meta.url);
   const stored = JSON.parse(await readFile(file, "utf8"));
   const { p1Proof, p2Proof, seq } = stored;

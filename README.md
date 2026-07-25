@@ -15,16 +15,17 @@ The project sits on three of Injective's own listed directions: **prediction mar
 | Real x402 payment settled on Injective testnet | [`0xd1901dd3…04fa6a`](https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a) |
 | Premium crossed Injective → Solana by CCTP | burn + mint tx — see [EVIDENCE.md](./EVIDENCE.md#gate-2--cctp-premium-route-pass) |
 | Live policy bound with cryptographically validated odds | [`4Uq5aW2v…MW3NM`](https://explorer.solana.com/tx/4Uq5aW2vsWyv43vZfy3wEi9kd1ivGgnUvJDJuUdyEV3ST6owgutFVuDtfHSucM791V9drPcPFk6RLcghdc8MW3NM?cluster=devnet) — policy `9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L`, 5.000000 USDC coverage, 4.241692 USDC premium, priced from 51.18% (France) |
-| Every claim reproducible | `make verify` — full output in [EVIDENCE.md](./EVIDENCE.md) |
+| Repeatable non-destructive checks | `make verify`; one-time transaction receipts are listed separately in [EVIDENCE.md](./EVIDENCE.md) |
 
 ---
 
 ## How the Injective technologies are used
 
 ### x402 — how the agent pays
-The bind endpoint is gated by `@injectivelabs/x402` middleware against a live facilitator on Injective testnet. `quote_coverage` is free, so agents can shop. `bind_coverage` returns a real HTTP 402 challenge; the agent signs a payment authorization, USDC settles on Injective, and the bind authorization is issued only after on-chain settlement.
+The bind endpoint is gated by `@injectivelabs/x402` middleware against a facilitator on Injective testnet. `quote_coverage` is free, so agents can shop. `bind_coverage` returns a real HTTP 402 challenge; the agent signs a payment authorization and USDC settles on Injective. The response is a payment receipt, not a policy. A policy exists only after a configured bind job reaches `policy_bound`.
 
-As far as we know, this is **the first insurance product purchasable over x402.** Most x402 endpoints in this hackathon sell a sentence. This one sells a liability someone else now owns.
+The recorded Gate 1 transaction proves that the desk accepted a real x402
+payment. It does not by itself prove that the payer received an issued policy.
 
 - Settled payment: [`0xd1901dd3…04fa6a`](https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a)
 - Negative tests: unpaid → 402; wrong amount (9,999 vs 10,000 units) → 402 `payment_amount_mismatch`, no settlement; zero coverage → 400 before payment.
@@ -51,7 +52,10 @@ Two tools talk to the desk; two read the chain directly, because solvency and po
 Install is three lines; see [mcp/README.md](./mcp/README.md). Verified by `node scripts/gate4-verify.mjs`, which spawns the server as a subprocess, speaks MCP JSON-RPC over stdio, and checks every tool response against the desk's own HTTP answer or an independent chain read — 18/18.
 
 ### Agent Skills — how any agent gets this
-A self-contained skill in the standard markdown format (loads in Claude Code, Codex, Cursor, and Gemini CLI) that teaches an agent when and how to hedge World Cup exposure: [skills/broker/SKILL.md](./skills/broker/SKILL.md).
+A self-contained skill in markdown format teaches an agent when and how to
+evaluate World Cup exposure: [skills/broker/SKILL.md](./skills/broker/SKILL.md).
+The file is present and reviewable; installation has not yet been verified
+across every named agent client.
 
 ```bash
 npm install && npm run server &
@@ -89,13 +93,28 @@ Note what is Injective-native: three of the four technologies — **x402, MCP Se
 
 **The problem.** An autonomous agent with money at risk on a World Cup outcome has two options today: eat the loss, or don't take the position. No counterparty will sell it protection, because insurance requires a human broker, a human underwriter, and days of paperwork. Every business running a "refund if we win" promotion has the same problem at human scale — the specialty market that covers it (prize indemnity) is slow, opaque, and closed.
 
-**What BROKER does.** Turns that into one HTTP call. An agent (or a person) describes the outcome it wants covered, gets a premium quoted deterministically from live signed odds, pays over x402, and holds a policy whose payout is collateralized on-chain from minute one. When the match ends, a Merkle proof of the result releases the payout automatically. Nobody is trusted — not us, not a keeper, not an oracle committee.
+**What this build proves.** BROKER demonstrates each devnet leg with real
+transactions: x402 payment, CCTP burn/mint, odds-validated policy issuance, and
+proof-gated settlement. Those receipts are from separate runs; one policy did
+not travel through all four legs as a single continuous request.
+
+The running desk currently quotes an explicitly configured demonstration rate.
+After payment it reports `payment_settled` and starts a durable bind job only
+when bridge and issuance adapters are configured. Payment alone is never called
+a bound policy. Odds-validated issuance additionally requires a currently
+served TxLINE packet inside SURETY's freshness window. The recorded World Cup
+packets remain useful for proof verification and the historical dashboard, but
+cannot honestly issue a new policy now that the tournament has ended.
 
 **How you interact with it — 60 seconds:**
 
 ```bash
-# 1. Install dependencies and start the desk
-npm install && npm run server
+# 1. Install dependencies and configure the desk
+npm ci
+cp .env.example .env
+# Export the values from .env after supplying facilitator credentials.
+# At minimum: PREMIUM_RATE_BPS and one of the documented facilitator modes.
+npm run server
 
 # 2. Ask for a quote (free)
 curl -X POST "$BROKER/quote" \
@@ -129,7 +148,8 @@ Or, from an agent: install the skill, connect the MCP server, and say *"I'm expo
 [Merkle proof CPI]      proof verified → payout released, same transaction
 ```
 
-Pull any one link and the chain breaks. That is the design.
+This diagram is the target orchestration and the separately proven transaction
+path. It is not evidence that one historical policy traversed every arrow.
 
 ## Verification
 
@@ -148,6 +168,19 @@ Prints PASS/FAIL per claim in plain English. What it re-runs live, every time:
 What it does **not** re-run, because these are one-time on-chain events that cannot be repeated on demand: the CCTP burn/mint route (Gate 2), and the odds-validated policy bind (Gate 3, which needs a signed odds packet under 15 minutes old — so it needs a match in progress). Those are evidenced by transaction hashes you can check yourself in [EVIDENCE.md](./EVIDENCE.md), not by this command.
 
 Full gate-by-gate evidence — including every self-audit and every unverified item — is in [EVIDENCE.md](./EVIDENCE.md). Integration friction is logged as we hit it in [docs/FRICTION_LOG.md](./docs/FRICTION_LOG.md), with the upstream issues we filed linked there.
+
+## Dashboard
+
+The dashboard lives in `web/` and runs on `127.0.0.1:8787` by default:
+
+```bash
+npm run dashboard
+curl --fail http://127.0.0.1:8787/healthz
+```
+
+It is a Node service because `/api/live` performs server-side chain and feed
+reads. Host it on a VPS behind Nginx or Caddy rather than uploading
+`web/public/` to static hosting. See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 
 ## Roadmap
 

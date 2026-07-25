@@ -11,7 +11,14 @@ if (!testnetUsdc?.eip3009) {
   throw new Error("published Injective x402 registry has no EIP-3009 testnet USDC");
 }
 
-export function createApp({ facilitatorPrivateKey, facilitatorUrl, payTo, premiumRateBps, rpcUrl }) {
+export function createApp({
+  facilitatorPrivateKey,
+  facilitatorUrl,
+  payTo,
+  premiumRateBps,
+  rpcUrl,
+  bindOrchestrator,
+}) {
   const usesLocalFacilitator = facilitatorPrivateKey !== undefined;
   if (usesLocalFacilitator && !/^0x[0-9a-fA-F]{64}$/.test(facilitatorPrivateKey)) {
     throw new Error("X402_FACILITATOR_PRIVATE_KEY must be a 32-byte hex private key");
@@ -27,6 +34,23 @@ export function createApp({ facilitatorPrivateKey, facilitatorUrl, payTo, premiu
   app.post("/quote", (req, res) => {
     const quote = quoteCoverage(req.body, premiumRateBps);
     res.json(quote);
+  });
+
+  app.get("/bind/:jobId", async (req, res, next) => {
+    if (!bindOrchestrator) {
+      res.status(503).json({ error: "bind_orchestration_unavailable" });
+      return;
+    }
+    try {
+      const job = await bindOrchestrator.status(req.params.jobId);
+      if (!job) {
+        res.status(404).json({ error: "bind_job_not_found" });
+        return;
+      }
+      res.json(job);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.post("/bind", (req, res, next) => {
@@ -73,8 +97,7 @@ export function createApp({ facilitatorPrivateKey, facilitatorUrl, payTo, premiu
         next(new Error("x402 settlement metadata missing or inconsistent"));
         return;
       }
-      res.json({
-        bind_authorization: {
+      const paymentReceipt = {
           quote_id: quote.quote_id,
           fixture: quote.fixture,
           outcome: quote.outcome,
@@ -83,9 +106,23 @@ export function createApp({ facilitatorPrivateKey, facilitatorUrl, payTo, premiu
           payer: payment.payer,
           payment_transaction: payment.txHash,
           network: payment.network,
-          status: "premium_paid_policy_pending_cctp",
-        },
-      });
+          status: "payment_settled",
+      };
+      if (!bindOrchestrator) {
+        res.status(202).json({
+          payment_receipt: paymentReceipt,
+          status: "payment_settled_orchestration_unavailable",
+          warning: "Payment settled, but no policy has been issued. Operator reconciliation is required.",
+        });
+        return;
+      }
+      Promise.resolve(bindOrchestrator.enqueue(paymentReceipt))
+        .then((job) => res.status(202).json({
+          payment_receipt: paymentReceipt,
+          bind_job: job,
+          status: job.status,
+        }))
+        .catch(next);
     });
   });
 

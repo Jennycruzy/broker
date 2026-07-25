@@ -12,7 +12,7 @@
 //   GATE3_COVERAGE   coverage in USDC base units (default 1500000 = 1.5 USDC)
 
 import { readFile } from "node:fs/promises";
-import { AnchorProvider, BN, Program, Wallet } from "@anchor-lang/core";
+import anchor from "@anchor-lang/core";
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { ComputeBudgetProgram, Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import {
@@ -42,7 +42,8 @@ import {
 
 const PROGRAM_ID = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW");
 const TXLINE_PROGRAM_ID = new PublicKey("6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J");
-const FIXTURE_ID = 18257865n; // France v England, World Cup, 2026-07-18 21:00 UTC
+const { AnchorProvider, BN, Program, Wallet } = anchor;
+const FIXTURE_ID = BigInt(process.env.GATE3_FIXTURE_ID ?? "18257865");
 const VAULT = new PublicKey(process.env.GATE3_VAULT ?? "6BaUXkDZAEmdwGHf1B8KNRUqqYvpTbKmzLdKCrH4eGrp");
 const OUTCOME_INDEX = OUTCOMES.indexOf(process.env.GATE3_OUTCOME ?? "WIN_HOME");
 if (OUTCOME_INDEX < 0) throw new Error("GATE3_OUTCOME must be WIN_HOME | DRAW | WIN_AWAY");
@@ -55,7 +56,7 @@ const dailyOddsRootsPda = (ms) => pda([Buffer.from("daily_batch_roots"), u16LE(M
 const tenDailyFixturesRootsPda = (ms) => pda([Buffer.from("ten_daily_fixtures_roots"), u16LE(Math.floor(Math.floor(ms / 86_400_000) / 10) * 10)], TXLINE_PROGRAM_ID);
 
 const idl = JSON.parse(await readFile(new URL("../bridge/surety_core.idl.json", import.meta.url), "utf8"));
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(process.env.GATE3_SOLANA_KEYPAIR ?? ".secrets/gate2-solana.json", "utf8"));
 const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" });
@@ -156,6 +157,13 @@ const { probabilityPpm, premium, utilizationBps } = validatedQuoteTerms({
   prices,
   outcomeIndex: OUTCOME_INDEX,
 });
+const expectedPremium = process.env.GATE3_EXPECTED_PREMIUM;
+if (expectedPremium !== undefined && premium !== BigInt(expectedPremium)) {
+  throw new Error(
+    `fresh odds price ${premium} does not equal the paid quote ${expectedPremium}; ` +
+    "refusing to issue different terms",
+  );
+}
 log(`STEP: quote — capital ${reconciledCapital} base units, prob ${probabilityPpm} ppm, util ${(utilizationBps / 100).toFixed(1)}%, premium ${premium} base units, coverage ${COVERAGE}`);
 
 const predicate17 = canonicalPredicate(FIXTURE_ID, OUTCOME_INDEX);
