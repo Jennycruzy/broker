@@ -7,10 +7,10 @@ import { injectiveTestnet } from "viem/chains";
 const USDC = "0x0C382e685bbeeFE5d3d9C29e29E341fEE8E84C5d";
 const TOKEN_MESSENGER = "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA";
 const RESERVE = new PublicKey("EgwE41BznuyVGtboQb5uBHsPdbabBzjzhyWYr3VRYC5J");
-const amount = BigInt(process.env.GATE2_CCTP_AMOUNT ?? "");
-if (amount < 1n) throw new Error("GATE2_CCTP_AMOUNT must be a positive USDC base-unit integer");
+const amount = BigInt(process.env.BROKER_CCTP_AMOUNT ?? "");
+if (amount < 1n) throw new Error("BROKER_CCTP_AMOUNT must be a positive USDC base-unit integer");
 
-const key = (await readFile(".secrets/gate1-facilitator.key", "utf8")).trim();
+const key = (await readFile(".secrets/x402-facilitator.key", "utf8")).trim();
 const account = privateKeyToAccount(key);
 const rpcUrl = "https://k8s.testnet.json-rpc.injective.network/";
 const publicClient = createPublicClient({ chain: injectiveTestnet, transport: http(rpcUrl) });

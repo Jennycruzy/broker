@@ -117,7 +117,7 @@ async function restoreCursor() {
         break;
       }
     } catch {
-      /* skip a partial trailing line from a hard kill; never fabricate it */
+      /* skip a partial trailing line from an interrupted write */
     }
   }
   if (lastMessageId) line(`resumed after restart at ${packetCount} packets, cursor ${lastMessageId}`);
@@ -144,7 +144,7 @@ async function captureFixtureProof(reason) {
   const { proof, bytes } = await fetchFixtureProof(session, fixture);
   await appendPacket("fixture-proof", { reason, fixture, proof }, bytes);
   packetCount++;
-  // The result packet is the latest fixture proof; overwrite so Gate 6 always
+  // The result packet is the latest fixture proof; overwrite so proof-gated settlement always
   // has the freshest verifiable result artifact.
   await writeFile(
     files.result,
@@ -221,7 +221,7 @@ async function main() {
     try {
       await poll();
     } catch (e) {
-      // Honest resilience: log, mark feed dead, keep polling. Never fabricate.
+      // Log the failure, mark the feed unavailable, and continue polling.
       line(`poll error: ${e.message}`);
       if (String(e.message).includes("HTTP 401") || String(e.message).includes("authentication")) {
         try {

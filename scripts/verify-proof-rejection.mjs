@@ -1,9 +1,9 @@
-// GATE 6.5 — negative test: a path that cannot fail cannot verify.
+// Confirm that the validator rejects altered Merkle proofs.
 //
 // The question this answers is narrow and important: is the Merkle proof
 // actually being verified on-chain, or is the program taking TxLINE's word for
 // the numbers? A test that merely watched settle_policy reject a policy would
-// not distinguish the two — the honest result and a rubber stamp look identical
+// not distinguish the two — authentic and unchecked results look identical
 // from outside.
 //
 // So this test relies on the two rejections being DIFFERENT:
@@ -21,7 +21,7 @@
 // Everything here simulates. Nothing is written on-chain, so this is safe to run
 // at any time and needs only a funded caller for fee estimation.
 //
-// Env: GATE6_POLICY, GATE6_FIXTURE_ID, GATE6_CALLER_KEYPAIR, GATE6_PROOF_SOURCE
+// Env: BROKER_SETTLEMENT_POLICY, BROKER_SETTLEMENT_FIXTURE_ID, BROKER_SETTLEMENT_KEYPAIR, BROKER_PROOF_SOURCE
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -31,9 +31,9 @@ import { ComputeBudgetProgram, Connection, Keypair, PublicKey } from "@solana/we
 import { dailyScoresRootPda } from "@surety-tx/txline-verify";
 import { buildStatValidationPayload, fetchSettlementProof, scorelineFrom } from "../bridge/settlement_payload.mjs";
 
-const POLICY = new PublicKey(process.env.GATE6_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
-const FIXTURE_ID = Number(process.env.GATE6_FIXTURE_ID ?? 18257865);
-const PROOF_SOURCE = process.env.GATE6_PROOF_SOURCE ?? "auto";
+const POLICY = new PublicKey(process.env.BROKER_SETTLEMENT_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
+const FIXTURE_ID = Number(process.env.BROKER_SETTLEMENT_FIXTURE_ID ?? 18257865);
+const PROOF_SOURCE = process.env.BROKER_PROOF_SOURCE ?? "auto";
 const TXLINE_PROGRAM_ID = new PublicKey("6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J");
 
 // SURETY's predicate verdict — only reachable AFTER the TxLINE CPI has verified
@@ -43,10 +43,10 @@ const PREDICATE_REJECTED = 6031;
 let pass = true;
 const check = (ok, msg) => { pass = pass && ok; console.log(`${ok ? "PASS" : "FAIL"}: ${msg}`); };
 
-const callerPath = process.env.GATE6_CALLER_KEYPAIR
-  ?? [".secrets/gate6-caller.json", ".secrets/gate2-solana.json", `${process.env.HOME}/.config/solana/id.json`]
+const callerPath = process.env.BROKER_SETTLEMENT_KEYPAIR
+  ?? [".secrets/settlement-caller.json", ".secrets/solana.json", `${process.env.HOME}/.config/solana/id.json`]
     .find((p) => existsSync(p));
-if (!callerPath) throw new Error("no caller keypair found; run node scripts/gate6-create-caller.mjs");
+if (!callerPath) throw new Error("no caller keypair found; run node scripts/create-settlement-caller.mjs");
 const caller = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(callerPath, "utf8"))));
 
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
@@ -131,7 +131,7 @@ check(!statResult.ok, `forged stat value (${original} → 0) is rejected`);
 check(statResult.custom !== PREDICATE_REJECTED || statResult.txlineReturned === false,
   `forging the scoreline does not buy a payout — rejected with ${statResult.anchorError ?? "custom " + statResult.custom}`);
 
-console.log(`\nGATE 6.5 ${pass ? "PASS" : "FAIL"}: on-chain proof verification distinguishes authentic from tampered proofs.`);
+console.log(`\nPROOF VERIFICATION ${pass ? "PASSED" : "FAILED"}: authentic and tampered proofs receive different verdicts.`);
 if (!pass) {
   console.log("\nFull logs from the tampered main-tree run:");
   for (const line of mainResult.logs) console.log(`  ${line}`);

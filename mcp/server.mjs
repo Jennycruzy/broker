@@ -1,20 +1,6 @@
-// BROKER MCP server — the four tools an agent actually needs to hedge exposure.
+// BROKER MCP server.
 //
-// Shaped around what an agent asks, not around endpoint parity: shop a price,
-// buy the cover, check the policy, check the underwriter is good for it. Two
-// tools speak to the BROKER desk over HTTP; two read Solana devnet directly,
-// because solvency and policy status are chain facts and routing them through
-// the desk would only invite the desk to shade them.
-//
-// Nothing here fabricates a result. If the desk is down, the tool says the desk
-// is down. If the chain is unreachable, the tool says so. In particular
-// bind_coverage does NOT pretend to have bought anything: the endpoint is x402-
-// gated, so an unpaid call comes back as a real HTTP 402 payment challenge, and
-// the tool hands that challenge to the agent to sign and settle. An MCP tool
-// that returned "coverage bound!" without a settled payment would be a lie the
-// agent could not detect.
-//
-// Config is environment-only — no pubkey, URL, or network is baked in:
+// Configuration:
 //   BROKER_URL             desk base URL          (default http://127.0.0.1:8080)
 //   SURETY_RPC_ENDPOINT    Solana RPC             (default devnet)
 //   BROKER_DEFAULT_VAULT   vault for vault_solvency when the agent omits one
@@ -186,8 +172,7 @@ server.registerTool(
     if (!address) return fail("no vault specified and BROKER_DEFAULT_VAULT is not set");
     try {
       const state = await readVault(chainCtx(), address);
-      // Solvency is the honest comparison: does the reserve actually hold what
-      // the vault's own accounting says is free, and is every liability backed?
+      // Compare reserve balance with the vault's free-reserve accounting.
       const backed = state.reserveBalance >= state.freeReserves;
       return ok({
         vault: state.address,

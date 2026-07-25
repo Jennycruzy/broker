@@ -1,4 +1,4 @@
-// GATE 3 — bind a policy on the deployed SURETY vault with real TxLINE-validated
+// Issue a policy on SURETY using TxLINE-validated
 // odds. Fetches a FRESH full-match 1X2 odds packet + fixture snapshot for France
 // v England from the live TxLINE API, verifies each proof on-chain, records the
 // ValidatedOdds / ValidatedFixture receipts (CPI into the TxLINE validator), then
@@ -7,9 +7,9 @@
 // re-derives and enforces them. No mock, no synthesized proof, no hardcoded odds.
 //
 // Env:
-//   GATE3_VAULT      vault pubkey (default: Gate 2 native-USDC vault)
-//   GATE3_OUTCOME    WIN_HOME | DRAW | WIN_AWAY (default WIN_HOME)
-//   GATE3_COVERAGE   coverage in USDC base units (default 1500000 = 1.5 USDC)
+//   BROKER_ISSUE_VAULT      vault pubkey (default: CCTP transfer native-USDC vault)
+//   BROKER_ISSUE_OUTCOME    WIN_HOME | DRAW | WIN_AWAY (default WIN_HOME)
+//   BROKER_ISSUE_COVERAGE   coverage in USDC base units (default 1500000 = 1.5 USDC)
 
 import { readFile } from "node:fs/promises";
 import anchor from "@anchor-lang/core";
@@ -43,11 +43,11 @@ import {
 const PROGRAM_ID = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW");
 const TXLINE_PROGRAM_ID = new PublicKey("6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J");
 const { AnchorProvider, BN, Program, Wallet } = anchor;
-const FIXTURE_ID = BigInt(process.env.GATE3_FIXTURE_ID ?? "18257865");
-const VAULT = new PublicKey(process.env.GATE3_VAULT ?? "6BaUXkDZAEmdwGHf1B8KNRUqqYvpTbKmzLdKCrH4eGrp");
-const OUTCOME_INDEX = OUTCOMES.indexOf(process.env.GATE3_OUTCOME ?? "WIN_HOME");
-if (OUTCOME_INDEX < 0) throw new Error("GATE3_OUTCOME must be WIN_HOME | DRAW | WIN_AWAY");
-const COVERAGE = BigInt(process.env.GATE3_COVERAGE ?? "1500000");
+const FIXTURE_ID = BigInt(process.env.BROKER_ISSUE_FIXTURE_ID ?? "18257865");
+const VAULT = new PublicKey(process.env.BROKER_ISSUE_VAULT ?? "6BaUXkDZAEmdwGHf1B8KNRUqqYvpTbKmzLdKCrH4eGrp");
+const OUTCOME_INDEX = OUTCOMES.indexOf(process.env.BROKER_ISSUE_OUTCOME ?? "WIN_HOME");
+if (OUTCOME_INDEX < 0) throw new Error("BROKER_ISSUE_OUTCOME must be WIN_HOME | DRAW | WIN_AWAY");
+const COVERAGE = BigInt(process.env.BROKER_ISSUE_COVERAGE ?? "1500000");
 
 const u16LE = (v) => { const b = Buffer.alloc(2); b.writeUInt16LE(v); return b; };
 const u64LE = (v) => { const b = Buffer.alloc(8); b.writeBigUInt64LE(BigInt(v)); return b; };
@@ -56,7 +56,7 @@ const dailyOddsRootsPda = (ms) => pda([Buffer.from("daily_batch_roots"), u16LE(M
 const tenDailyFixturesRootsPda = (ms) => pda([Buffer.from("ten_daily_fixtures_roots"), u16LE(Math.floor(Math.floor(ms / 86_400_000) / 10) * 10)], TXLINE_PROGRAM_ID);
 
 const idl = JSON.parse(await readFile(new URL("../bridge/surety_core.idl.json", import.meta.url), "utf8"));
-const secret = JSON.parse(await readFile(process.env.GATE3_SOLANA_KEYPAIR ?? ".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(process.env.BROKER_SOLANA_KEYPAIR ?? ".secrets/solana.json", "utf8"));
 const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" });
@@ -73,8 +73,8 @@ if (!(await validateFixtureOnDevnet(provider, fixtureProof))) throw new Error("f
 
 // TxLINE's demo feed emits fresh full-match 1X2 packets intermittently. Poll
 // until one is comfortably inside the on-chain freshness window (leaving buffer
-// for record + issue), up to GATE3_WAIT_MINUTES (0 = do not wait).
-const waitMinutes = Number(process.env.GATE3_WAIT_MINUTES ?? "0");
+// for record + issue), up to BROKER_ODDS_WAIT_MINUTES (0 = do not wait).
+const waitMinutes = Number(process.env.BROKER_ODDS_WAIT_MINUTES ?? "0");
 const freshBufferMs = 10 * 60 * 1000; // require age < 10 min so record+issue stay < 15
 const deadline = Date.now() + waitMinutes * 60 * 1000;
 let packet;
@@ -157,7 +157,7 @@ const { probabilityPpm, premium, utilizationBps } = validatedQuoteTerms({
   prices,
   outcomeIndex: OUTCOME_INDEX,
 });
-const expectedPremium = process.env.GATE3_EXPECTED_PREMIUM;
+const expectedPremium = process.env.BROKER_EXPECTED_PREMIUM;
 if (expectedPremium !== undefined && premium !== BigInt(expectedPremium)) {
   throw new Error(
     `fresh odds price ${premium} does not equal the paid quote ${expectedPremium}; ` +
@@ -239,7 +239,7 @@ if (!Buffer.from(stored.quoteHash).equals(quoteHash)) throw new Error("stored po
 const escrowBalance = BigInt((await connection.getTokenAccountBalance(policyEscrow)).value.amount);
 
 console.log("\n" + JSON.stringify({
-  gate: "3 — policy bound on SURETY with TxLINE-validated odds",
+  operation: "policy bound on SURETY with TxLINE-validated odds",
   fixture: `${fixture.Participant1} v ${fixture.Participant2} (${FIXTURE_ID})`,
   outcome_insured: OUTCOMES[OUTCOME_INDEX],
   odds: { messageId: packet.MessageId, prices, timestampMs: Number(oddsAccount.oddsTimestampMs) },

@@ -25,8 +25,7 @@ function stateChip(f) {
   return `<span class="state pre">UPCOMING</span>`;
 }
 
-// The provenance line. This is the honesty surface of the whole board: it names
-// the source, and for replay it names the limitation rather than hiding it.
+// The provenance line names the source and replay limitations.
 function sourceNote(f) {
   if (f.source === "live") {
     return `<span class="fresh">● live feed · signed packet ${f.ageSec}s old${f.bindable ? " · bindable" : " · outside the 15-min bind window"}</span>`;

@@ -1,4 +1,4 @@
-// Independent on-chain verification of the bound Gate 3 policy — does NOT trust
+// Independent on-chain verification of the bound odds-validated issuance policy — does NOT trust
 // the issuance script's stdout. Fetches the policy account, its escrow, the
 // vault reserve, the holder balance, and confirms both transactions succeeded.
 import { readFile } from "node:fs/promises";
@@ -13,7 +13,7 @@ const RECORD_ODDS_TX = "2FMuYCgYJnVQbWsL8LmarysfBh7ebUGen4uzxxF2QjMYqPKk8mFKLEkC
 const ISSUE_TX = "4Uq5aW2vsWyv43vZfy3wEi9kd1ivGgnUvJDJuUdyEV3ST6owgutFVuDtfHSucM791V9drPcPFk6RLcghdc8MW3NM";
 
 const idl = JSON.parse(await readFile(new URL("../bridge/surety_core.idl.json", import.meta.url), "utf8"));
-const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"))));
+const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(".secrets/solana.json", "utf8"))));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const program = new Program(idl, new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" }));
 
@@ -29,7 +29,7 @@ for (const [name, sig] of [["record_validated_odds", RECORD_ODDS_TX], ["issue_po
 // 2. Policy account is real, Open, and bound to the right vault/holder/coverage.
 const policy = await program.account.policy.fetch(POLICY);
 check(policy.status.open !== undefined, `policy status is Open`);
-check(policy.vault.equals(VAULT), `policy is bound to the Gate 3 vault`);
+check(policy.vault.equals(VAULT), `policy is bound to the odds-validated issuance vault`);
 check(policy.holder.equals(payer.publicKey), `policy holder is the agent wallet ${payer.publicKey.toBase58()}`);
 check(BigInt(policy.coverage.toString()) === 5_000_000n, `coverage is 5 USDC (${policy.coverage} base units)`);
 check(BigInt(policy.premium.toString()) === 4_241_692n, `premium is 4.241692 USDC (${policy.premium} base units)`);
@@ -53,5 +53,5 @@ const holderAta = getAssociatedTokenAddressSync(vault.assetMint, payer.publicKey
 const holderBal = BigInt((await connection.getTokenAccountBalance(holderAta)).value.amount);
 console.log(`INFO: holder USDC after premium ${holderBal} base units; reserve ${(await connection.getTokenAccountBalance(vault.reserve)).value.amount} base units`);
 
-console.log(`\nGATE 3 ${pass ? "VERIFIED" : "FAILED"}: policy ${POLICY.toBase58()}`);
+console.log(`\nPOLICY ${pass ? "VERIFIED" : "FAILED"}: ${POLICY.toBase58()}`);
 process.exit(pass ? 0 : 1);

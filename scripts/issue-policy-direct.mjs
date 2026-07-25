@@ -1,7 +1,7 @@
 // Issues a policy through `issue_policy` — the direct path, without a TxLINE
 // odds-validation receipt.
 //
-// WHAT THIS IS AND IS NOT. Gate 3 proved odds-validated issuance: a policy priced
+// WHAT THIS IS AND IS NOT. odds-validated issuance proved odds-validated issuance: a policy priced
 // from a signed odds packet that the SURETY program re-verified on-chain inside a
 // 15-minute freshness window. That path is the product. This script does NOT
 // reproduce it and does not claim to.
@@ -22,11 +22,11 @@
 // price, not one the chain re-derived from a validated packet.
 //
 // Env:
-//   GATE6_FIXTURE_ID   fixture to insure (default 18257739, Spain v Argentina)
-//   GATE6_OUTCOME      WIN_HOME | DRAW | WIN_AWAY (default WIN_HOME)
-//   GATE6_COVERAGE     coverage in USDC base units (default 2000000 = 2 USDC)
-//   GATE6_CALLER_KEYPAIR   holder/payer keypair
-//   GATE6_CONFIRM      "yes" to actually send
+//   BROKER_SETTLEMENT_FIXTURE_ID   fixture to insure (default 18257739, Spain v Argentina)
+//   BROKER_SETTLEMENT_OUTCOME      WIN_HOME | DRAW | WIN_AWAY (default WIN_HOME)
+//   BROKER_SETTLEMENT_COVERAGE     coverage in USDC base units (default 2000000 = 2 USDC)
+//   BROKER_SETTLEMENT_KEYPAIR   holder/payer keypair
+//   BROKER_CONFIRM      "yes" to actually send
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -44,21 +44,21 @@ import {
 } from "../server/pricing.mjs";
 
 const PROGRAM_ID = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW");
-const FIXTURE_ID = BigInt(process.env.GATE6_FIXTURE_ID ?? "18257739");
-const OUTCOME_INDEX = OUTCOMES.indexOf(process.env.GATE6_OUTCOME ?? "WIN_HOME");
-if (OUTCOME_INDEX < 0) throw new Error("GATE6_OUTCOME must be WIN_HOME | DRAW | WIN_AWAY");
-const COVERAGE = BigInt(process.env.GATE6_COVERAGE ?? "2000000");
-const VAULT = new PublicKey(process.env.GATE6_VAULT ?? "CrnjZE2DXMPLtRXJ6MPHaKifEi13qp1vAFn9ohXBpqZu");
-const CONFIRM = process.env.GATE6_CONFIRM === "yes";
+const FIXTURE_ID = BigInt(process.env.BROKER_SETTLEMENT_FIXTURE_ID ?? "18257739");
+const OUTCOME_INDEX = OUTCOMES.indexOf(process.env.BROKER_SETTLEMENT_OUTCOME ?? "WIN_HOME");
+if (OUTCOME_INDEX < 0) throw new Error("BROKER_SETTLEMENT_OUTCOME must be WIN_HOME | DRAW | WIN_AWAY");
+const COVERAGE = BigInt(process.env.BROKER_SETTLEMENT_COVERAGE ?? "2000000");
+const VAULT = new PublicKey(process.env.BROKER_SETTLEMENT_VAULT ?? "CrnjZE2DXMPLtRXJ6MPHaKifEi13qp1vAFn9ohXBpqZu");
+const CONFIRM = process.env.BROKER_CONFIRM === "yes";
 
 const log = (m) => console.log(m);
 const usdc = (units) => (Number(units) / 1e6).toFixed(6);
 const u64LE = (v) => { const b = Buffer.alloc(8); b.writeBigUInt64LE(BigInt(v)); return b; };
 const pda = (seeds, programId = PROGRAM_ID) => PublicKey.findProgramAddressSync(seeds, programId)[0];
 
-const keyPath = process.env.GATE6_CALLER_KEYPAIR
-  ?? [".secrets/gate6-caller.json", ".secrets/gate2-solana.json"].find((p) => existsSync(p));
-if (!keyPath) throw new Error("no holder keypair found; run node scripts/gate6-create-caller.mjs");
+const keyPath = process.env.BROKER_SETTLEMENT_KEYPAIR
+  ?? [".secrets/settlement-caller.json", ".secrets/solana.json"].find((p) => existsSync(p));
+if (!keyPath) throw new Error("no holder keypair found; run node scripts/create-settlement-caller.mjs");
 const holder = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(keyPath, "utf8"))));
 
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
@@ -105,7 +105,7 @@ log(`STEP: holder USDC ${usdc(holderBalance)} covers the ${usdc(premium)} premiu
 // --- policy terms -------------------------------------------------------------
 // predicate_hash must be sha256 of the canonical 17-byte predicate or the program
 // rejects with PredicateHashMismatch (6019). bucket_hash likewise pins the
-// exposure bucket. Both come from the same helpers Gate 3 used.
+// exposure bucket. Both come from the same helpers odds-validated issuance used.
 const predicate17 = canonicalPredicate(FIXTURE_ID, OUTCOME_INDEX);
 const predicateBytes = Buffer.alloc(32);
 predicate17.copy(predicateBytes);
@@ -167,11 +167,11 @@ if (simulation.error) {
 log("PASS: simulation succeeded");
 
 if (!CONFIRM) {
-  log("\nDRY RUN. Nothing was written on-chain. Re-run with GATE6_CONFIRM=yes to issue.");
+  log("\nDRY RUN. Nothing was written on-chain. Re-run with BROKER_CONFIRM=yes to issue.");
   process.exit(0);
 }
 
-log("\nSTEP: GATE6_CONFIRM=yes — issuing for real");
+log("\nSTEP: BROKER_CONFIRM=yes — issuing for real");
 const signature = await builder.rpc();
 await connection.confirmTransaction(signature, "confirmed");
 
@@ -192,5 +192,5 @@ console.log("\n" + JSON.stringify({
   status: Object.keys(stored.status)[0],
   escrow_balance_usdc: usdc(escrowBalance),
   transaction: `https://explorer.solana.com/tx/${signature}?cluster=devnet`,
-  next: `GATE6_POLICY=${policy.toBase58()} GATE6_FIXTURE_ID=${FIXTURE_ID} npm run settle:gate6`,
+  next: `BROKER_SETTLEMENT_POLICY=${policy.toBase58()} BROKER_SETTLEMENT_FIXTURE_ID=${FIXTURE_ID} npm run settle:settlement`,
 }, null, 2));

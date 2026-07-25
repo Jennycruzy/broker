@@ -32,7 +32,7 @@ const idl = {
   }],
 };
 
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" });

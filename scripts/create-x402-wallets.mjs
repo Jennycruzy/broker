@@ -7,7 +7,7 @@ await mkdir(".secrets", { recursive: true, mode: 0o700 });
 
 for (const role of ["facilitator", "payer"]) {
   const key = generatePrivateKey();
-  const path = `.secrets/gate1-${role}.key`;
+  const path = `.secrets/x402-${role}.key`;
   const file = await open(path, "wx", 0o600);
   await file.writeFile(`${key}\n`, { encoding: "utf8" });
   await file.close();

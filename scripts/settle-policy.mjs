@@ -1,4 +1,4 @@
-// GATE 6.3 — settle the bound policy against a real TxLINE full-time proof.
+// Settle a policy against a TxLINE full-time result proof.
 //
 // settle_policy CPIs into the TxLINE validator with a StatValidationV2 payload.
 // The program re-derives the policy predicate from the proved final-period stats
@@ -7,22 +7,22 @@
 // real on-chain state transitions; neither is chosen by this script. We supply a
 // proof and the chain decides.
 //
-// Nothing here fabricates a result. The stat proof comes from the authenticated
-// TxLINE API, or — if the dev feed has aged the fixture out — from the recording
+// The stat proof comes from the authenticated TxLINE API, or — if the dev feed
+// has aged the fixture out — from the recording
 // captured while the match ran, whose bytes are the same ones TxLINE signed. In
 // both cases the on-chain TxLINE program verifies the Merkle proof against its
 // own daily scores root, so a proof this script got wrong simply fails.
 //
 // SAFETY: this script SIMULATES by default and writes nothing. Escrow movement is
-// irreversible, so a real send requires GATE6_CONFIRM=yes to be set explicitly.
+// irreversible, so a real send requires BROKER_CONFIRM=yes to be set explicitly.
 //
 // Env:
-//   GATE6_POLICY          policy pubkey (default: the Gate 3 policy)
-//   GATE6_FIXTURE_ID      fixture to prove (default 18257865)
-//   GATE6_CALLER_KEYPAIR  path to the funded caller keypair (any funded signer;
+//   BROKER_SETTLEMENT_POLICY          policy pubkey (default: the odds-validated issuance policy)
+//   BROKER_SETTLEMENT_FIXTURE_ID      fixture to prove (default 18257865)
+//   BROKER_SETTLEMENT_KEYPAIR  path to the funded caller keypair (any funded signer;
 //                         the caller does not have to be the policy holder)
-//   GATE6_PROOF_SOURCE    live | recorded | auto  (default auto: live, else recorded)
-//   GATE6_CONFIRM         "yes" to actually send the transaction
+//   BROKER_PROOF_SOURCE    live | recorded | auto  (default auto: live, else recorded)
+//   BROKER_CONFIRM         "yes" to actually send the transaction
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -33,10 +33,10 @@ import { dailyScoresRootPda } from "@surety-tx/txline-verify";
 import { FINAL_PERIOD } from "../bridge/txline_scores.mjs";
 import { buildStatValidationPayload, fetchSettlementProof, scorelineFrom } from "../bridge/settlement_payload.mjs";
 
-const POLICY = new PublicKey(process.env.GATE6_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
-const FIXTURE_ID = Number(process.env.GATE6_FIXTURE_ID ?? 18257865);
-const PROOF_SOURCE = process.env.GATE6_PROOF_SOURCE ?? "auto";
-const CONFIRM = process.env.GATE6_CONFIRM === "yes";
+const POLICY = new PublicKey(process.env.BROKER_SETTLEMENT_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
+const FIXTURE_ID = Number(process.env.BROKER_SETTLEMENT_FIXTURE_ID ?? 18257865);
+const PROOF_SOURCE = process.env.BROKER_PROOF_SOURCE ?? "auto";
+const CONFIRM = process.env.BROKER_CONFIRM === "yes";
 const TXLINE_PROGRAM_ID = new PublicKey("6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J");
 const MIN_CALLER_LAMPORTS = 20_000_000n; // 0.02 SOL
 
@@ -46,14 +46,14 @@ const usdc = (units) => (Number(units) / 1e6).toFixed(6);
 // --- caller -------------------------------------------------------------------
 // settle_policy requires only that the caller signs and can pay fees, so this is
 // deliberately not tied to the holder keypair.
-const callerPath = process.env.GATE6_CALLER_KEYPAIR
-  ?? [".secrets/gate6-caller.json", ".secrets/gate2-solana.json", `${process.env.HOME}/.config/solana/id.json`]
+const callerPath = process.env.BROKER_SETTLEMENT_KEYPAIR
+  ?? [".secrets/settlement-caller.json", ".secrets/solana.json", `${process.env.HOME}/.config/solana/id.json`]
     .find((p) => existsSync(p));
 if (!callerPath || !existsSync(callerPath)) {
   throw new Error(
     "no caller keypair found. settle_policy needs a funded devnet signer.\n" +
-    "  Set GATE6_CALLER_KEYPAIR=/path/to/keypair.json, or create+fund one with\n" +
-    "  node scripts/gate6-create-caller.mjs",
+    "  Set BROKER_SETTLEMENT_KEYPAIR=/path/to/keypair.json, or create+fund one with\n" +
+    "  node scripts/create-settlement-caller.mjs",
   );
 }
 const caller = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(callerPath, "utf8"))));
@@ -130,7 +130,7 @@ const builder = program.methods
 // the policy predicate, TxLINE's CPI returns false and the program aborts with
 // TxlinePredicateRejected (6031) — it does not silently take an expire branch.
 // Closing out a policy whose predicate did not occur is `expire_policy`, a
-// separate instruction with no proof and a time gate. See gate6-expire-policy.mjs.
+// separate instruction with no proof and a time condition. See expire-policy.mjs.
 const PREDICATE_REJECTED = 6031;
 
 log("STEP: simulating settle_policy (no state change)");
@@ -146,7 +146,7 @@ if (simulation.error) {
     log(`  The proof verified: TxLINE's validator ran to completion and returned false.`);
     log(`  Proved full-time result is P1 ${p1Goals} : P2 ${p2Goals}, which does not satisfy`);
     log(`  this policy's predicate, so there is no payout to make.`);
-    log(`  settle_policy cannot close this policy. Use scripts/gate6-expire-policy.mjs`);
+    log(`  settle_policy cannot close this policy. Use scripts/expire-policy.mjs`);
     log(`  once the policy reaches its expires_at.`);
     process.exit(3);
   }
@@ -157,12 +157,12 @@ log("PASS: simulation succeeded — the proof verifies on-chain and the predicat
 
 if (!CONFIRM) {
   log("\nDRY RUN. Nothing was written on-chain.");
-  log("Escrow movement is irreversible; re-run with GATE6_CONFIRM=yes to settle for real.");
+  log("Escrow movement is irreversible; re-run with BROKER_CONFIRM=yes to settle for real.");
   process.exit(0);
 }
 
 // --- send ---------------------------------------------------------------------
-log("\nSTEP: GATE6_CONFIRM=yes — sending settle_policy for real");
+log("\nSTEP: BROKER_CONFIRM=yes — sending settle_policy for real");
 const signature = await builder.rpc();
 log(`  settle tx ${signature}`);
 await connection.confirmTransaction(signature, "confirmed");
@@ -172,7 +172,7 @@ const policyAfter = await program.account.policy.fetch(POLICY);
 const statusAfter = Object.keys(policyAfter.status)[0];
 
 console.log("\n" + JSON.stringify({
-  gate: "6 — automatic settlement on SURETY from a TxLINE full-time proof",
+  operation: "automatic settlement on SURETY from a TxLINE full-time proof",
   policy: POLICY.toBase58(),
   caller: caller.publicKey.toBase58(),
   proofSource: source,

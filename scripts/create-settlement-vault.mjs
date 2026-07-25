@@ -1,9 +1,9 @@
 // Creates and capitalises a formula-v1 SURETY vault so the SETTLEMENT path can be
 // demonstrated on a fixture that has already been played.
 //
-// WHY A SECOND VAULT EXISTS. The Gate 3 vault is formula_version 2, which enforces
+// WHY A SECOND VAULT EXISTS. The odds-validated issuance vault is formula_version 2, which enforces
 // `issue_policy_with_validated_odds` — direct issuance is rejected with
-// ValidatedOddsRequired (6046). That rule is the strongest thing about Gate 3: a
+// ValidatedOddsRequired (6046). That rule is the strongest thing about odds-validated issuance: a
 // policy can only bind against a signed odds packet less than 15 minutes old.
 //
 // It is also, unavoidably, what makes settlement undemonstrable on that vault
@@ -11,13 +11,13 @@
 // binding on the v2 vault requires a match that has not been played and therefore
 // has no outcome. The two cannot be true of the same fixture at the same moment.
 //
-// So: v2 vault proves odds-validated issuance (Gate 3). This v1 vault proves
-// proof-gated settlement (Gate 6). Both are real capital in real escrow on devnet.
-// Neither claim is used to imply the other — see EVIDENCE.md.
+// So: v2 vault proves odds-validated issuance (odds-validated issuance). This v1 vault proves
+// proof-gated settlement (proof-gated settlement). Both are real capital in real escrow on devnet.
+// Neither claim is used to imply the other — see RECEIPTS.md.
 //
 // Idempotent: re-running will not re-initialize or double-deposit.
 //
-// Env: GATE6_CALLER_KEYPAIR, GATE6_DEPOSIT (base units, default 10000000 = 10 USDC)
+// Env: BROKER_SETTLEMENT_KEYPAIR, BROKER_SETTLEMENT_DEPOSIT (base units, default 10000000 = 10 USDC)
 
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -32,14 +32,14 @@ import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 
 const PROGRAM_ID = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW");
 const NATIVE_USDC = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
-const DEPOSIT = BigInt(process.env.GATE6_DEPOSIT ?? "10000000");
+const DEPOSIT = BigInt(process.env.BROKER_SETTLEMENT_DEPOSIT ?? "10000000");
 
 const usdc = (u) => (Number(u) / 1e6).toFixed(6);
 const log = (m) => console.log(m);
 
-const keyPath = process.env.GATE6_CALLER_KEYPAIR
-  ?? [".secrets/gate6-caller.json", ".secrets/gate2-solana.json"].find((p) => existsSync(p));
-if (!keyPath) throw new Error("no keypair found; run node scripts/gate6-create-caller.mjs");
+const keyPath = process.env.BROKER_SETTLEMENT_KEYPAIR
+  ?? [".secrets/settlement-caller.json", ".secrets/solana.json"].find((p) => existsSync(p));
+if (!keyPath) throw new Error("no keypair found; run node scripts/create-settlement-caller.mjs");
 const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(keyPath, "utf8"))));
 
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
@@ -57,7 +57,7 @@ log(`STEP: vault ${vault.toBase58()}`);
 
 // --- initialize ---------------------------------------------------------------
 // formula_version = 1 → direct issue_policy permitted. Same 9000-bps bucket cap
-// and 15000-bps margin as the Gate 3 vault so the premium math is comparable.
+// and 15000-bps margin as the odds-validated issuance vault so the premium math is comparable.
 let initTx = "already_initialized";
 if (!(await connection.getAccountInfo(vault, "confirmed"))) {
   log("STEP: initializing formula-v1 vault");
@@ -123,5 +123,5 @@ console.log("\n" + JSON.stringify({
     initialize: initTx === "already_initialized" ? initTx : `https://explorer.solana.com/tx/${initTx}?cluster=devnet`,
     deposit: depositTx === "skipped" ? depositTx : `https://explorer.solana.com/tx/${depositTx}?cluster=devnet`,
   },
-  next: `GATE6_VAULT=${vault.toBase58()} node scripts/gate6-issue-policy-direct.mjs`,
+  next: `BROKER_SETTLEMENT_VAULT=${vault.toBase58()} node scripts/issue-policy-direct.mjs`,
 }, null, 2));

@@ -1,6 +1,6 @@
 // Shapes a TxLINE full-time stat proof into SURETY's `StatValidationInput`.
 //
-// Shared by gate6-settle-policy.mjs and gate6-tamper-negative.mjs so the negative
+// Shared by settle-policy.mjs and verify-proof-rejection.mjs so the negative
 // test tampers with the exact payload the real path submits. If these two drifted
 // apart the negative test would be proving something about code nobody runs.
 //

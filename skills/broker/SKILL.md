@@ -78,7 +78,7 @@ releases the payout in the same transaction. Re-check `policy_status`:
   is spent. That is what insurance costs when you do not need it.
 - `Open` — not settled yet.
 
-## Being honest with the user
+## Reporting policy state
 
 - A quote is a price, not a forecast. Do not present the implied probability as
   BROKER's prediction of the match.

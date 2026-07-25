@@ -15,13 +15,13 @@ function required(name) {
   return value;
 }
 
-const facilitatorPrivateKey = (await readFile(".secrets/gate1-facilitator.key", "utf8")).trim();
-const payerPrivateKey = (await readFile(".secrets/gate1-payer.key", "utf8")).trim();
+const facilitatorPrivateKey = (await readFile(".secrets/x402-facilitator.key", "utf8")).trim();
+const payerPrivateKey = (await readFile(".secrets/x402-payer.key", "utf8")).trim();
 const premiumRateBps = parsePremiumRateBps(required("PREMIUM_RATE_BPS"));
 const requestBody = {
-  fixture: required("GATE1_FIXTURE"),
-  outcome: required("GATE1_OUTCOME"),
-  coverage_amount: required("GATE1_COVERAGE_AMOUNT"),
+  fixture: required("BROKER_FIXTURE"),
+  outcome: required("BROKER_OUTCOME"),
+  coverage_amount: required("BROKER_COVERAGE_AMOUNT"),
 };
 
 const rpcUrl = "https://k8s.testnet.json-rpc.injective.network/";

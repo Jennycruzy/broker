@@ -22,7 +22,7 @@ const dailyOddsRootsPda = (ms) => pda([Buffer.from("daily_batch_roots"), u16LE(M
 const tenDailyFixturesRootsPda = (ms) => pda([Buffer.from("ten_daily_fixtures_roots"), u16LE(Math.floor(Math.floor(ms / 86_400_000) / 10) * 10)], TXLINE_PROGRAM_ID);
 
 const idl = JSON.parse(await readFile(new URL("../bridge/surety_core.idl.json", import.meta.url), "utf8"));
-const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"))));
+const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(".secrets/solana.json", "utf8"))));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const program = new Program(idl, new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" }));
 

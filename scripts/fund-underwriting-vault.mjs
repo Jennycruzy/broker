@@ -1,9 +1,9 @@
-// Fund Gate 3 via CCTP: bridge USDC Injective -> Solana into the holder's
+// Fund odds-validated issuance via CCTP: bridge USDC Injective -> Solana into the holder's
 // native-USDC account, then move the capital portion into the new vault reserve.
 // Leaves the premium portion in the holder account to pay at issuance.
 //
-// Env: GATE3_VAULT_RESERVE (required), GATE3_FUND_TOTAL (default 17000000),
-//      GATE3_FUND_CAPITAL (default 12000000).
+// Env: BROKER_VAULT_RESERVE (required), BROKER_FUND_TOTAL (default 17000000),
+//      BROKER_FUND_CAPITAL (default 12000000).
 import { readFile } from "node:fs/promises";
 import {
   createTransferCheckedInstruction,
@@ -17,15 +17,15 @@ import { injectiveTestnet } from "viem/chains";
 import { burnFromInjective, waitForAttestation, mintOnSolana } from "../bridge/cctp.mjs";
 
 const NATIVE_USDC = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
-const RESERVE = new PublicKey(process.env.GATE3_VAULT_RESERVE ?? (() => { throw new Error("GATE3_VAULT_RESERVE is required"); })());
-const TOTAL = BigInt(process.env.GATE3_FUND_TOTAL ?? "17000000");
-const CAPITAL = BigInt(process.env.GATE3_FUND_CAPITAL ?? "12000000");
-const PAYER_KEY = ".secrets/gate1-payer.key";
-const GAS_KEY = ".secrets/gate1-facilitator.key";
+const RESERVE = new PublicKey(process.env.BROKER_VAULT_RESERVE ?? (() => { throw new Error("BROKER_VAULT_RESERVE is required"); })());
+const TOTAL = BigInt(process.env.BROKER_FUND_TOTAL ?? "17000000");
+const CAPITAL = BigInt(process.env.BROKER_FUND_CAPITAL ?? "12000000");
+const PAYER_KEY = ".secrets/x402-payer.key";
+const GAS_KEY = ".secrets/x402-facilitator.key";
 const INJ_RPC = "https://k8s.testnet.json-rpc.injective.network/";
 
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
-const solSecret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const solSecret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const holder = Keypair.fromSecretKey(Uint8Array.from(solSecret));
 const log = (m) => console.log(m);
 
@@ -60,7 +60,7 @@ log("STEP: waiting for Circle attestation");
 const record = await waitForAttestation(burn.burnHash);
 log("  attestation complete");
 log("STEP: minting on Solana into holder ATA");
-const mint = await mintOnSolana({ record, recipientTokenAccount: holderAta.address, solanaKeyPath: ".secrets/gate2-solana.json", connection });
+const mint = await mintOnSolana({ record, recipientTokenAccount: holderAta.address, solanaKeyPath: ".secrets/solana.json", connection });
 log(`  mint tx https://explorer.solana.com/tx/${mint.mintSignature}?cluster=devnet`);
 
 // --- 4. Move the capital portion into the vault reserve ---------------------

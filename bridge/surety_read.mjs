@@ -1,7 +1,7 @@
 // Read-only SURETY chain reader.
 //
 // Everything here fetches; nothing signs, and nothing is cached across calls.
-// It exists so the dashboard and the Gate 6 verifier read policy/vault state
+// It exists so the dashboard and the proof-gated settlement verifier read policy/vault state
 // from devnet instead of restating figures a human typed into a source file —
 // a hardcoded `status: "Open"` becomes a lie the moment settlement lands.
 //

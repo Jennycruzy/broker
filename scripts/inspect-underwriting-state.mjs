@@ -1,4 +1,4 @@
-// Read-only: current capital state relevant to Gate 3 sizing.
+// Read-only: current capital state relevant to odds-validated issuance sizing.
 import { readFile } from "node:fs/promises";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -8,7 +8,7 @@ const RESERVE = new PublicKey("EgwE41BznuyVGtboQb5uBHsPdbabBzjzhyWYr3VRYC5J");
 const VAULT = new PublicKey("6BaUXkDZAEmdwGHf1B8KNRUqqYvpTbKmzLdKCrH4eGrp");
 const PROGRAM = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW");
 
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const wallet = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 

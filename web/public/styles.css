@@ -54,7 +54,7 @@ body {
 .live-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
 .live-pill.on .dot { background: var(--good); box-shadow: 0 0 0 4px rgba(12,163,12,.18); animation: pulse 2s infinite; }
 .live-pill.off .dot { background: #d03b3b; }
-/* Replay is a real, honest state — signed data, just not fresh. Amber, not red. */
+/* Replay data is signed but not fresh. */
 .live-pill.replay .dot { background: var(--warn); box-shadow: 0 0 0 4px rgba(250,178,25,.16); }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }

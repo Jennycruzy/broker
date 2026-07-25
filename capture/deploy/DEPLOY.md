@@ -75,5 +75,5 @@ cat      data/recordings/18257865/CAPTURE_LOG.md  # start/stop, gaps, proofs
 ls -la   data/recordings/18257865/result-packet.json   # settleable result present?
 ```
 
-Full window + a `result-packet.json` with a proof → proceed to Gate 6 settlement.
+Full window + a `result-packet.json` with a proof → proceed to proof-gated settlement settlement.
 Partial capture is still real data — report exactly what exists; never backfill.

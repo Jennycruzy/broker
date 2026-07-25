@@ -1,24 +1,23 @@
-// GATE 6.4 — independent verification of the settlement.
+// Reconcile a settlement against current chain state.
 //
-// Deliberately does NOT trust the settling script's stdout. It refetches the
+// Refetch the
 // transaction, the policy, the escrow, the vault and the payout account from
-// devnet and checks that the numbers agree with each other. If gate6-settle-
-// policy.mjs had printed a comforting lie, this would catch it.
+// devnet and check that the balances agree.
 //
 // It also re-derives the payout independently: the escrow drained by exactly the
 // policy's own coverage figure, and the payout account grew by exactly the same
 // amount. A settlement that moved a different number would fail here even though
 // the transaction "succeeded".
 //
-// Env: GATE6_POLICY, GATE6_SETTLE_TX
+// Env: BROKER_SETTLEMENT_POLICY, BROKER_SETTLEMENT_TX
 
 import { readFile } from "node:fs/promises";
 import { AnchorProvider, Program, Wallet } from "@anchor-lang/core";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 
-const POLICY = new PublicKey(process.env.GATE6_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG");
-const SETTLE_TX = process.env.GATE6_SETTLE_TX
+const POLICY = new PublicKey(process.env.BROKER_SETTLEMENT_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG");
+const SETTLE_TX = process.env.BROKER_SETTLEMENT_TX
   ?? "2SZFA2gaskxaNLjHy34Z3XomRN93i2zY3nbiQgWQaLizTUwmDDeLREvP2Bquih4JZXyYAmHpmfxLHUWBCVcK7qDg";
 const TXLINE_PROGRAM_ID = "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J";
 
@@ -78,6 +77,6 @@ const bucket = await program.account.exposureBucket.fetchNullable(policy.bucket)
 check(bucket === null || BigInt(bucket.lockedExposure.toString()) === 0n,
   `exposure bucket unwound to ${bucket ? usdc(bucket.lockedExposure.toString()) : "0 (closed)"} USDC`);
 
-console.log(`\nGATE 6.4 ${pass ? "VERIFIED" : "FAILED"}: settlement of policy ${POLICY.toBase58()}`);
+console.log(`\nSETTLEMENT ${pass ? "VERIFIED" : "FAILED"}: policy ${POLICY.toBase58()}`);
 console.log(`  https://explorer.solana.com/tx/${SETTLE_TX}?cluster=devnet`);
 process.exit(pass ? 0 : 1);

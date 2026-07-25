@@ -1,4 +1,4 @@
-// Create a fresh native-USDC SURETY vault for Gate 3, with a 9000-bps bucket cap
+// Create a fresh native-USDC SURETY vault for odds-validated issuance, with a 9000-bps bucket cap
 // (capital-efficient: coverage may approach 90% of capital) and formula version 2
 // so it accepts issue_policy_with_validated_odds. Idempotent.
 import { createHash } from "node:crypto";
@@ -11,7 +11,7 @@ const PROGRAM_ID = new PublicKey("3e5rBR2J9uHPHHn6tP8HF6mPbEJsJWtzQEyicv6v8qVW")
 const NATIVE_USDC = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
 const idl = JSON.parse(await readFile(new URL("../bridge/surety_core.idl.json", import.meta.url), "utf8"));
 
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" });

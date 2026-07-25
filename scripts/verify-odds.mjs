@@ -1,6 +1,6 @@
-// Gate 3, Part A — TxLINE odds/fixture validation primitive.
+// odds-validated issuance, Part A — TxLINE odds/fixture validation primitive.
 //
-// Proves the exact functions Gate 3 names — validateOddsOnDevnet /
+// Proves the exact functions odds-validated issuance names — validateOddsOnDevnet /
 // suretyOddsValidationInput (and the fixture equivalents) from the public
 // package @surety-tx/txline-verify — against REAL recorded TxLINE proofs for
 // fixture 18257865 (France v England, World Cup). validateOddsOnDevnet uses a
@@ -10,9 +10,9 @@
 // Positive test: the authentic proof verifies (true).
 // Negative test: flipping one proof bit is rejected (false).
 //
-// This is the verification half of Gate 3. The issuance half
+// This is the verification half of odds-validated issuance. The issuance half
 // (issue_policy_with_validated_odds) additionally requires a FRESH (<15 min)
-// live odds packet, which needs the TxLINE API token — see EVIDENCE.md.
+// live odds packet, which needs the TxLINE API token — see RECEIPTS.md.
 
 import { readFile } from "node:fs/promises";
 import { AnchorProvider, Wallet } from "@anchor-lang/core";
@@ -32,9 +32,9 @@ const FIXTURE_PROOF = "data/recordings/txline-18257865-1784149200000-fixture-pro
 
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 // `.view()` simulates and never signs or sends, but Solana simulation still
-// requires the fee-payer account to exist on-chain. Reuse the funded Gate 2
+// requires the fee-payer account to exist on-chain. Reuse the funded CCTP transfer
 // devnet wallet as a read-only fee payer; no transaction is ever submitted.
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const provider = new AnchorProvider(connection, new Wallet(Keypair.fromSecretKey(Uint8Array.from(secret))), {
   commitment: "confirmed",
 });

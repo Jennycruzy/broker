@@ -9,8 +9,8 @@ const TOKEN_MESSENGER_MINTER = new PublicKey("CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFs
 const SOLANA_USDC = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
 const INJECTIVE_USDC = "0x0C382e685bbeeFE5d3d9C29e29E341fEE8E84C5d";
 const RESERVE = new PublicKey("EgwE41BznuyVGtboQb5uBHsPdbabBzjzhyWYr3VRYC5J");
-const burnHash = process.env.GATE2_BURN_HASH;
-if (!/^0x[0-9a-fA-F]{64}$/.test(burnHash ?? "")) throw new Error("GATE2_BURN_HASH is required");
+const burnHash = process.env.BROKER_CCTP_BURN_HASH;
+if (!/^0x[0-9a-fA-F]{64}$/.test(burnHash ?? "")) throw new Error("BROKER_CCTP_BURN_HASH is required");
 
 const response = await fetch(`https://iris-api-sandbox.circle.com/v2/messages/29?transactionHash=${burnHash}`);
 if (!response.ok) throw new Error(`Circle attestation API returned HTTP ${response.status}`);
@@ -20,7 +20,7 @@ if (record?.status !== "complete" || !record.message || !record.attestation) {
   throw new Error(`Circle attestation is not complete: ${record?.status ?? "missing"}`);
 }
 
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const payer = Keypair.fromSecretKey(Uint8Array.from(secret));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(payer), { commitment: "confirmed" });

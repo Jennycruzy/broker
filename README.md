@@ -13,9 +13,9 @@ The project sits on three of Injective's own listed directions: **prediction mar
 | What | Proof |
 |---|---|
 | Real x402 payment settled on Injective testnet | [`0xd1901dd3…04fa6a`](https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a) |
-| Premium crossed Injective → Solana by CCTP | burn + mint tx — see [EVIDENCE.md](./EVIDENCE.md#gate-2--cctp-premium-route-pass) |
+| Premium crossed Injective → Solana by CCTP | burn + mint tx — see [RECEIPTS.md](./RECEIPTS.md#cctp-transfer) |
 | Live policy bound with cryptographically validated odds | [`4Uq5aW2v…MW3NM`](https://explorer.solana.com/tx/4Uq5aW2vsWyv43vZfy3wEi9kd1ivGgnUvJDJuUdyEV3ST6owgutFVuDtfHSucM791V9drPcPFk6RLcghdc8MW3NM?cluster=devnet) — policy `9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L`, 5.000000 USDC coverage, 4.241692 USDC premium, priced from 51.18% (France) |
-| Repeatable non-destructive checks | `make verify`; one-time transaction receipts are listed separately in [EVIDENCE.md](./EVIDENCE.md) |
+| Repeatable non-destructive checks | `make verify`; one-time transaction receipts are listed separately in [RECEIPTS.md](./RECEIPTS.md) |
 
 ---
 
@@ -24,7 +24,7 @@ The project sits on three of Injective's own listed directions: **prediction mar
 ### x402 — how the agent pays
 The bind endpoint is gated by `@injectivelabs/x402` middleware against a facilitator on Injective testnet. `quote_coverage` is free, so agents can shop. `bind_coverage` returns a real HTTP 402 challenge; the agent signs a payment authorization and USDC settles on Injective. The response is a payment receipt, not a policy. A policy exists only after a configured bind job reaches `policy_bound`.
 
-The recorded Gate 1 transaction proves that the desk accepted a real x402
+The recorded x402 payment transaction proves that the desk accepted a real x402
 payment. It does not by itself prove that the payer received an issued policy.
 
 - Settled payment: [`0xd1901dd3…04fa6a`](https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a)
@@ -33,7 +33,7 @@ payment. It does not by itself prove that the payer received an issued policy.
 ### USDC CCTP — how the money reaches the capital
 The premium is paid on Injective. The vault that must collateralize the payout lives on Solana. CCTP burn-and-mint carries the funds between them: **Injective testnet (domain 29) → Solana devnet (domain 5)**, verified live against Circle's attestation service. Remove CCTP and BROKER cannot function — there is no other path from the buyer to the capital.
 
-- Route, burn tx, attestation, and mint tx: [EVIDENCE.md — Gate 2](./EVIDENCE.md#gate-2--cctp-premium-route-pass)
+- Route, burn tx, attestation, and mint tx: [RECEIPTS.md — CCTP transfer](./RECEIPTS.md#cctp-transfer)
 
 ### MCP Server — how the agent has hands
 BROKER exposes four tools shaped around what an agent actually asks, not endpoint parity: `quote_coverage`, `bind_coverage`, `policy_status`, `vault_solvency`.
@@ -47,23 +47,17 @@ The demo agent **composes Injective's own MCP server** (33 tools — market data
 | `policy_status` | `policy` | no — reads Solana |
 | `vault_solvency` | `vault?` | no — reads Solana |
 
-Two tools talk to the desk; two read the chain directly, because solvency and policy status are chain facts and routing them through the desk would only invite the desk to shade them. `bind_coverage` does not pretend to have bought anything on an unpaid call — it returns the real 402 challenge for the agent to sign.
+Two tools talk to the desk; two read the chain directly. `bind_coverage`
+returns the 402 challenge until a payment authorization is supplied.
 
-Install is three lines; see [mcp/README.md](./mcp/README.md). Verified by `node scripts/gate4-verify.mjs`, which spawns the server as a subprocess, speaks MCP JSON-RPC over stdio, and checks every tool response against the desk's own HTTP answer or an independent chain read — 18/18.
+Configuration and client JSON are documented in [mcp/README.md](./mcp/README.md).
+`node scripts/verify-mcp.mjs` checks the stdio transport, tool responses, desk
+responses and independent chain reads.
 
 ### Agent Skills — how any agent gets this
 A self-contained skill in markdown format teaches an agent when and how to
 evaluate World Cup exposure: [skills/broker/SKILL.md](./skills/broker/SKILL.md).
-The file is present and reviewable; installation has not yet been verified
-across every named agent client.
-
-```bash
-npm install && npm run server &
-claude mcp add broker -- node "$PWD/mcp/server.mjs"
-cp -r skills/broker ~/.claude/skills/
-```
-
-The skill covers the part that actually goes wrong: working out which outcome you are exposed to, checking the underwriter before buying, and never reporting a hedge as in place until the x402 payment has settled.
+The skill covers exposure selection, solvency checks, payment and policy status.
 
 ---
 
@@ -71,9 +65,12 @@ The skill covers the part that actually goes wrong: working out which outcome yo
 
 **The obvious question first: why is there a second chain?**
 
-Because CCTP is a two-chain protocol. It burns USDC on a source domain and mints it on a destination domain — a single-chain CCTP integration does not exist. Injective put CCTP on the technology list, so *every* honest entry has a second chain. The only real question is whether that second chain does anything. In most integrations it is a faucet: USDC comes from somewhere so it can arrive, and the far side is inert.
+Because CCTP burns USDC on a source domain and mints it on a destination
+domain. BROKER uses Injective testnet as the payment side and Solana devnet as
+the underwriting side.
 
-Here the far side is the balance sheet. It holds the capital, locks the escrow, and verifies the Merkle proof that releases the payout. **BROKER is the only build where removing the far side doesn't remove a funding step — it removes the product.**
+The Solana side holds capital, locks escrow, and verifies the Merkle proof that
+releases a payout.
 
 Note what is Injective-native: three of the four technologies — **x402, MCP Server, Agent Skills** — run entirely on Injective, and they are the whole product surface. The desk, the agent's hands, the payment, the skill. What lives on Solana is a settlement primitive BROKER calls, the way any fintech calls a ledger it did not write.
 
@@ -110,7 +107,7 @@ when bridge and issuance adapters are configured. Payment alone is never called
 a bound policy. Odds-validated issuance additionally requires a currently
 served TxLINE packet inside SURETY's freshness window. The recorded World Cup
 packets remain useful for proof verification and the historical dashboard, but
-cannot honestly issue a new policy now that the tournament has ended.
+cannot issue a new policy now that the tournament has ended.
 
 **How you interact with it — 60 seconds:**
 
@@ -171,9 +168,10 @@ Prints PASS/FAIL per claim in plain English. What it re-runs live, every time:
 - the recorded settlement still reconciles against live chain state
 - the pricing math is byte-exact against SURETY's Rust test vector
 
-What it does **not** re-run, because these are one-time on-chain events that cannot be repeated on demand: the CCTP burn/mint route (Gate 2), and the odds-validated policy bind (Gate 3, which needs a signed odds packet under 15 minutes old — so it needs a match in progress). Those are evidenced by transaction hashes you can check yourself in [EVIDENCE.md](./EVIDENCE.md), not by this command.
+What it does **not** re-run, because these are one-time on-chain events that cannot be repeated on demand: the CCTP burn/mint route (CCTP transfer), and the odds-validated policy bind (odds-validated issuance, which needs a signed odds packet under 15 minutes old — so it needs a match in progress). Those are evidenced by transaction hashes you can check yourself in [RECEIPTS.md](./RECEIPTS.md), not by this command.
 
-Full gate-by-gate evidence — including every self-audit and every unverified item — is in [EVIDENCE.md](./EVIDENCE.md). Integration friction is logged as we hit it in [docs/FRICTION_LOG.md](./docs/FRICTION_LOG.md), with the upstream issues we filed linked there.
+Transaction links and repeatable checks are listed in
+[RECEIPTS.md](./RECEIPTS.md).
 
 ## Dashboard
 
@@ -195,9 +193,6 @@ and `/api/live` as one Render Web Service.
 The `onrender.com` URL is created only after approving this deployment in a
 Render account. When the service becomes **Live**, copy the URL displayed under
 the `broker-dashboard` service name.
-
-For recording narration and the exact SURETY/BROKER distinction, see
-[docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md).
 
 ## Roadmap
 

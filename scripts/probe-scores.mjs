@@ -1,4 +1,4 @@
-// Read-only Gate 6 probe. Answers one question in ~30 seconds and writes
+// Read-only proof-gated settlement probe. Answers one question in ~30 seconds and writes
 // nothing on-chain: does TxLINE dev still serve a full-time scores proof
 // for our recorded target fixture so we can settle the existing policy
 // from this laptop, or do we need to schedule a live fixture on the VPS?
@@ -19,7 +19,7 @@
 // It intentionally does NOT run validateStatV2OnDevnet, because that
 // requires a funded fee-payer we don't have on this laptop yet. The
 // program-side verification is exercised for real inside
-// gate6-settle-policy.mjs, where the policy holder's funded keypair does
+// settle-policy.mjs, where the policy holder's funded keypair does
 // the settle transaction.
 
 import { Connection, PublicKey } from "@solana/web3.js";
@@ -33,7 +33,7 @@ import {
   STAT_KEY_FULL_MATCH_P2_GOALS,
 } from "../bridge/txline_scores.mjs";
 
-const FIXTURE_ID = Number(process.env.GATE6_FIXTURE_ID ?? 18257865);
+const FIXTURE_ID = Number(process.env.BROKER_SETTLEMENT_FIXTURE_ID ?? 18257865);
 const TXLINE_PROGRAM_ID = new PublicKey("6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J");
 
 console.log(`probe fixture ${FIXTURE_ID} against ${process.env.TXLINE_API_ORIGIN ?? "https://txline-dev.txodds.com"}`);
@@ -96,7 +96,7 @@ if (!rootAccount.owner.equals(TXLINE_PROGRAM_ID)) {
 console.log(`PASS: dailyScoresRoot PDA ${rootPda.toBase58()} present (owner ${rootAccount.owner.toBase58()}, ${rootAccount.data.length}B data) — settle_policy will find it`);
 
 console.log("\nRESULT: fresh full-time scores proofs served by TxLINE, proof shape valid, on-chain root present.");
-console.log("        Gate 6 settle_policy can run from this laptop once we have the policy-holder keypair funded.");
+console.log("        proof-gated settlement settle_policy can run from this laptop once we have the policy-holder keypair funded.");
 console.log(JSON.stringify({
   fixtureId: FIXTURE_ID,
   purifiedFixtureId: pureFixtureId(p1.proof.summary.fixtureId).toString(),

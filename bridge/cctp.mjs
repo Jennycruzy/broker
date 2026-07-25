@@ -1,6 +1,6 @@
 // BROKER CCTP bridge — burn USDC on Injective testnet, mint native USDC on
 // Solana devnet, to an arbitrary recipient token account. Generalized from the
-// proven Gate 2 burn/mint scripts (same Circle contracts, same pinned Circle
+// proven CCTP transfer burn/mint scripts (same Circle contracts, same pinned Circle
 // IDLs verified by SHA-256). Real burn + real Circle attestation + real mint;
 // no represented transfer.
 import { createHash } from "node:crypto";

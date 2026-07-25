@@ -16,7 +16,7 @@ import {
 
 const FIXTURE_ID = 18257865n; // France v England, World Cup
 
-const secret = JSON.parse(await readFile(".secrets/gate2-solana.json", "utf8"));
+const secret = JSON.parse(await readFile(".secrets/solana.json", "utf8"));
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 const provider = new AnchorProvider(connection, new Wallet(Keypair.fromSecretKey(Uint8Array.from(secret))), {
   commitment: "confirmed",

@@ -8,12 +8,9 @@ Four tools that let an agent hedge World Cup exposure: `quote_coverage`,
 ```bash
 npm install                                   # from the repo root
 npm run server &                              # start the BROKER desk on :8080
-claude mcp add broker -- node "$PWD/mcp/server.mjs"
 ```
 
-That is the whole install. The server speaks MCP over stdio, so any MCP client
-works — the `claude mcp add` line is just the shortest example. For a client that
-reads a JSON config:
+The server speaks MCP over stdio. Add it to an MCP client with this configuration:
 
 ```json
 {
@@ -55,11 +52,9 @@ x402-gated. Called without `payment_header` it returns a real HTTP 402 challenge
 describing what to pay, on which asset and network. Sign it and call again with
 the authorization as `payment_header`.
 
-The tool does not pretend to have bought anything on the unpaid call. A settled
-payment produces a `payment_receipt` and, when orchestration is configured, a
-durable bind job. Coverage is bound only when that job reaches `policy_bound`
-and carries the Solana policy address. Payment settlement by itself is not a
-policy.
+A settled payment produces a `payment_receipt` and, when orchestration is
+configured, a durable bind job. Coverage is bound when that job reaches
+`policy_bound` and carries the Solana policy address.
 
 **`policy_status`** `{ policy }` — reads the policy account from Solana devnet:
 `Open`, `Triggered` or `Expired`, plus coverage, premium and the balance still
@@ -75,7 +70,7 @@ would only invite the desk to shade them.
 ## Verifying it
 
 ```bash
-node scripts/gate4-verify.mjs
+node scripts/verify-mcp.mjs
 ```
 
 Spawns this server as a real subprocess, speaks MCP JSON-RPC over stdio, and

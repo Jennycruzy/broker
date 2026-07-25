@@ -1,11 +1,11 @@
-// Creates and funds a devnet caller keypair for Gate 6 settlement.
+// Creates and funds a devnet caller keypair for proof-gated settlement settlement.
 //
 // settle_policy requires a signer that can pay fees — nothing more. It does not
 // need to be the policy holder, and the payout still routes to the policy's own
 // payout_authority whoever calls. So a host that has no keypair (e.g. the VPS)
 // can settle without any secret being copied between machines.
 //
-// Writes .secrets/gate6-caller.json (gitignored, mode 600) and airdrops from the
+// Writes .secrets/settlement-caller.json (gitignored, mode 600) and airdrops from the
 // public devnet faucet. Idempotent: reuses the keypair if it already exists, and
 // only tops up if the balance is below the floor.
 
@@ -13,9 +13,9 @@ import { mkdir, readFile, writeFile, chmod } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { Connection, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-const KEY_PATH = process.env.GATE6_CALLER_KEYPAIR ?? ".secrets/gate6-caller.json";
-const TARGET_SOL = Number(process.env.GATE6_CALLER_SOL ?? "1");
-const FLOOR_LAMPORTS = 20_000_000; // 0.02 SOL — the floor gate6-settle-policy enforces
+const KEY_PATH = process.env.BROKER_SETTLEMENT_KEYPAIR ?? ".secrets/settlement-caller.json";
+const TARGET_SOL = Number(process.env.BROKER_SETTLEMENT_CALLER_SOL ?? "1");
+const FLOOR_LAMPORTS = 20_000_000; // 0.02 SOL — the floor settle-policy enforces
 
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
 
@@ -50,7 +50,7 @@ try {
 } catch (error) {
   console.error(`airdrop failed: ${error.message}`);
   console.error(`\nFund ${caller.publicKey.toBase58()} manually at https://faucet.solana.com (devnet),`);
-  console.error("or set GATE6_CALLER_KEYPAIR to an already-funded keypair.");
+  console.error("or set BROKER_SETTLEMENT_KEYPAIR to an already-funded keypair.");
   process.exit(1);
 }
 
@@ -58,4 +58,4 @@ if (lamports < FLOOR_LAMPORTS) {
   console.error(`balance still below the ${FLOOR_LAMPORTS} lamport floor`);
   process.exit(1);
 }
-console.log(`\ncaller ready. Run:\n  GATE6_CALLER_KEYPAIR=${KEY_PATH} node scripts/gate6-settle-policy.mjs`);
+console.log(`\ncaller ready. Run:\n  BROKER_SETTLEMENT_KEYPAIR=${KEY_PATH} node scripts/settle-policy.mjs`);

@@ -1,4 +1,4 @@
-// GATE 4 — verify the MCP server against ground truth.
+// Compare MCP responses with the desk and independent chain reads.
 //
 // The failure mode this guards against is an MCP server that looks right in a
 // transcript while quietly serving its own numbers. So every tool response is
@@ -19,8 +19,8 @@ import { createApp } from "../server/app.mjs";
 import { parsePremiumRateBps } from "../server/coverage.mjs";
 import { createReadOnlyProgram, readPolicy, readVault } from "../bridge/surety_read.mjs";
 
-const POLICY = process.env.GATE4_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG";
-const VAULT = process.env.GATE4_VAULT ?? "EP2fr7ThxUnvRxVmyXXi2c2xm9uu79JMWyTPWFznFFRV";
+const POLICY = process.env.BROKER_VERIFY_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG";
+const VAULT = process.env.BROKER_VERIFY_VAULT ?? "EP2fr7ThxUnvRxVmyXXi2c2xm9uu79JMWyTPWFznFFRV";
 const FIXTURE = "18257739";
 const OUTCOME = "WIN_HOME";
 const COVERAGE = "2000000";
@@ -99,7 +99,7 @@ try {
   const init = await rpc("initialize", {
     protocolVersion: "2024-11-05",
     capabilities: {},
-    clientInfo: { name: "gate4-verify", version: "1.0.0" },
+    clientInfo: { name: "verify-mcp", version: "1.0.0" },
   });
   check(init.result?.serverInfo?.name === "broker", `MCP handshake — server identifies as "${init.result?.serverInfo?.name}"`);
   notify("notifications/initialized", {});
@@ -150,7 +150,7 @@ try {
   const bogus = await callTool("policy_status", { policy: "11111111111111111111111111111111" });
   check(bogus.result?.isError === true, `policy_status on a non-policy account reports an error rather than inventing state`);
 
-  console.log(`\nGATE 4 ${pass ? "VERIFIED" : "FAILED"}: MCP tools agree with the desk and the chain.`);
+  console.log(`\nMCP ${pass ? "VERIFIED" : "FAILED"}: tools agree with the desk and chain.`);
   await finish(pass ? 0 : 1);
 } catch (error) {
   console.error(`\nFAIL: ${error.message}`);

@@ -1,4 +1,4 @@
-// GATE 6 — close out a policy whose insured outcome did not occur.
+// Close a policy whose insured outcome did not occur.
 //
 // settle_policy is the PAYOUT path: it requires the proved result to satisfy the
 // policy predicate, and aborts with TxlinePredicateRejected (6031) when it does
@@ -12,9 +12,9 @@
 // reserve, and the program gates it on time alone (PolicyNotExpired, 6022).
 //
 // SAFETY: simulates by default. Escrow movement is irreversible, so a real send
-// requires GATE6_CONFIRM=yes.
+// requires BROKER_CONFIRM=yes.
 //
-// Env: GATE6_POLICY, GATE6_CALLER_KEYPAIR, GATE6_CONFIRM
+// Env: BROKER_SETTLEMENT_POLICY, BROKER_SETTLEMENT_KEYPAIR, BROKER_CONFIRM
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -22,17 +22,17 @@ import { AnchorProvider, Program, Wallet } from "@anchor-lang/core";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 
-const POLICY = new PublicKey(process.env.GATE6_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
-const CONFIRM = process.env.GATE6_CONFIRM === "yes";
+const POLICY = new PublicKey(process.env.BROKER_SETTLEMENT_POLICY ?? "9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L");
+const CONFIRM = process.env.BROKER_CONFIRM === "yes";
 const POLICY_NOT_EXPIRED = 6022;
 
 const log = (m) => console.log(m);
 const usdc = (units) => (Number(units) / 1e6).toFixed(6);
 
-const callerPath = process.env.GATE6_CALLER_KEYPAIR
-  ?? [".secrets/gate6-caller.json", ".secrets/gate2-solana.json", `${process.env.HOME}/.config/solana/id.json`]
+const callerPath = process.env.BROKER_SETTLEMENT_KEYPAIR
+  ?? [".secrets/settlement-caller.json", ".secrets/solana.json", `${process.env.HOME}/.config/solana/id.json`]
     .find((p) => existsSync(p));
-if (!callerPath) throw new Error("no caller keypair found; run node scripts/gate6-create-caller.mjs");
+if (!callerPath) throw new Error("no caller keypair found; run node scripts/create-settlement-caller.mjs");
 const caller = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(callerPath, "utf8"))));
 
 const connection = new Connection(process.env.SURETY_RPC_ENDPOINT ?? "https://api.devnet.solana.com", "confirmed");
@@ -94,11 +94,11 @@ log("PASS: simulation succeeded — the policy is expirable now");
 
 if (!CONFIRM) {
   log("\nDRY RUN. Nothing was written on-chain.");
-  log("Escrow movement is irreversible; re-run with GATE6_CONFIRM=yes to expire for real.");
+  log("Escrow movement is irreversible; re-run with BROKER_CONFIRM=yes to expire for real.");
   process.exit(0);
 }
 
-log("\nSTEP: GATE6_CONFIRM=yes — sending expire_policy for real");
+log("\nSTEP: BROKER_CONFIRM=yes — sending expire_policy for real");
 const signature = await builder.rpc();
 log(`  expire tx ${signature}`);
 await connection.confirmTransaction(signature, "confirmed");
@@ -107,7 +107,7 @@ const after = await balances();
 const policyAfter = await program.account.policy.fetch(POLICY);
 
 console.log("\n" + JSON.stringify({
-  gate: "6 — policy expiry releases locked coverage back to the vault",
+  operation: "policy expiry releases locked coverage back to the vault",
   policy: POLICY.toBase58(),
   caller: caller.publicKey.toBase58(),
   status: { before: statusBefore, after: Object.keys(policyAfter.status)[0] },

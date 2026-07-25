@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const SCRIPT = fileURLToPath(new URL("../scripts/gate3-issue-policy.mjs", import.meta.url));
+const SCRIPT = fileURLToPath(new URL("../scripts/issue-policy-with-odds.mjs", import.meta.url));
 
 function finalJson(stdout) {
   const starts = [];
@@ -12,10 +12,7 @@ function finalJson(stdout) {
   throw new Error("fresh-odds issuance produced no final JSON receipt");
 }
 
-// Process adapter around the proven Gate 3 transaction path. Keeping the
-// transaction builder in one implementation prevents the demo script and
-// server worker from drifting. The script itself fetches and validates a fresh
-// TxLINE packet, computes SURETY's quote, checks holder funds, and issues.
+// Runs the shared odds-validated issuance command used by the server worker.
 export function createFreshOddsIssueAdapter({
   vault,
   solanaKeyPath,
@@ -31,13 +28,13 @@ export function createFreshOddsIssueAdapter({
     }
     const env = {
       ...process.env,
-      GATE3_VAULT: vault,
-      GATE3_FIXTURE_ID: paymentReceipt.fixture,
-      GATE3_OUTCOME: paymentReceipt.outcome,
-      GATE3_COVERAGE: paymentReceipt.coverage_amount,
-      GATE3_EXPECTED_PREMIUM: paymentReceipt.premium_amount,
-      GATE3_SOLANA_KEYPAIR: solanaKeyPath,
-      GATE3_WAIT_MINUTES: String(waitMinutes),
+      BROKER_ISSUE_VAULT: vault,
+      BROKER_ISSUE_FIXTURE_ID: paymentReceipt.fixture,
+      BROKER_ISSUE_OUTCOME: paymentReceipt.outcome,
+      BROKER_ISSUE_COVERAGE: paymentReceipt.coverage_amount,
+      BROKER_EXPECTED_PREMIUM: paymentReceipt.premium_amount,
+      BROKER_SOLANA_KEYPAIR: solanaKeyPath,
+      BROKER_ODDS_WAIT_MINUTES: String(waitMinutes),
       SURETY_RPC_ENDPOINT: rpcEndpoint,
     };
     const child = spawn(process.execPath, [SCRIPT], { env, stdio: ["ignore", "pipe", "pipe"] });
