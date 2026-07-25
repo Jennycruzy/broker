@@ -308,90 +308,109 @@ cannot itself run or supervise the multi-hour capture windows. The recorder is
 built and dry-run against the live feed; deployment onto the operator's VPS is a
 blocker owned by the operator (see below / build report).
 
-## Gate 6 — Automatic settlement: PARTIAL (verification proven, state transition blocked)
+## Gate 6 — Automatic settlement: PASS
 
-Gate 6 is reported as PARTIAL, not PASS. The on-chain proof-verification path is
-proven with real devnet execution and a negative test that distinguishes a valid
-proof from a tampered one. What is **not** claimed is a completed settlement
-state transition — no `settle_policy` or `expire_policy` transaction has been
-sent, for the reasons recorded below. Every figure here is reproducible with
-`npm run verify:gate6`.
+A policy was settled on-chain from a TxLINE full-time Merkle proof. The escrowed
+coverage moved to the payout account in the same transaction that verified the
+proof, and the transition was re-verified independently from chain state.
+
+Reproduce: `npm run verify:gate6` (negative tests) and
+`node scripts/gate6-verify-settlement.mjs` (settlement verification).
+
+### The settlement
+
+- Policy `Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG` — 2.000000 USDC coverage,
+  0.172374 USDC premium, insuring `WIN_HOME` on fixture 18257739
+  (Spain v Argentina, the final).
+- Proved full-time result: **P1 1 : P2 0**, TxLINE scores seq 1385, stat keys 1
+  and 2 at period 100 — fetched live from the authenticated TxLINE API at
+  settlement time, not from a recording.
+- `settle_policy` tx:
+  <https://explorer.solana.com/tx/2SZFA2gaskxaNLjHy34Z3XomRN93i2zY3nbiQgWQaLizTUwmDDeLREvP2Bquih4JZXyYAmHpmfxLHUWBCVcK7qDg?cluster=devnet>
+- Policy status **open → triggered**. Escrow `AtnZE27e…q6MgZ` 2.000000 → 0.
+  Payout account 9.827626 → 11.827626 USDC. Vault `locked_liabilities` → 0,
+  exposure bucket unwound to 0.
+
+Independently verified by `scripts/gate6-verify-settlement.mjs`, which refetches
+everything rather than trusting the settling script's stdout — 10/10 checks pass,
+including that the transaction actually CPI'd into the TxLINE validator and that
+the validator returned success, and that the escrow drained by *exactly* the
+policy's own coverage figure and the payout account grew by exactly the same
+amount.
 
 ### Correction to the earlier plan
 
-The Gate 6 plan assumed `settle_policy` contained an "expire branch" that would
-return escrowed coverage to the vault when the insured outcome did not occur.
-**It does not.** The deployed program exposes two separate instructions:
+The plan assumed `settle_policy` had an "expire branch" that returned coverage to
+the vault when the insured outcome did not occur. **It does not.** The program
+exposes two instructions: `settle_policy` (payout path — aborts with
+`TxlinePredicateRejected` 6031 if the predicate is false) and `expire_policy`
+(no proof, no args, gated on `expires_at` by `PolicyNotExpired` 6022). Found by
+running the real instruction against devnet.
 
-- `settle_policy` — the payout path. Verifies a TxLINE full-time Merkle proof by
-  CPI, and pays coverage out only if the proved result satisfies the policy
-  predicate. If it does not, the program aborts with `TxlinePredicateRejected`
-  (6031). There is no fallthrough.
-- `expire_policy` — takes no proof and no arguments. Returns escrowed coverage to
-  the reserve once the policy passes its `expires_at`, gated by `PolicyNotExpired`
-  (6022).
+### Why the settled policy sits in a second vault — stated plainly
 
-This was found by running the real instruction against devnet, not by reading
-about it. The earlier assumption is corrected in `docs/GATE_HANDOFF.md`.
+The Gate 3 policy could not be used to demonstrate settlement, and no policy on
+the Gate 3 vault could have been. That vault is `formula_version` 2, which
+enforces `issue_policy_with_validated_odds` and rejects direct issuance with
+`ValidatedOddsRequired` (6046). Odds-validated issuance requires a signed packet
+less than 15 minutes old — so it can only bind against a match that has not been
+played, and therefore has no result to settle against. Settlement requires the
+opposite. Both cannot be true of one fixture at one moment.
 
-### Verified: the proof is genuinely verified on-chain
+So the settlement above ran on a separate `formula_version` 1 vault
+`EP2fr7ThxUnvRxVmyXXi2c2xm9uu79JMWyTPWFznFFRV`, capitalised with 10 USDC
+(<https://explorer.solana.com/tx/5agVgDptA65sbdnmm52ecqaK28kkmmhCAMapAn94yw4AddB6ABbUHHEW9GtJM7S7Ad19CM2kMmwFrSWHdbjCpWF8?cluster=devnet>),
+policy issued at
+<https://explorer.solana.com/tx/2YcPuHkjpsAZ1zMEZBzKRMNWGwYFcNTxH4YTJCEhmADp3FHU2ecdsDdhBPzb7Sai9rVQagM2R4E5Sptvmng7n9uK?cluster=devnet>.
 
-`scripts/gate6-tamper-negative.mjs` — 8/8 checks pass against Solana devnet. The
-test turns on the two rejections being *different*, because "it failed" alone
-cannot distinguish real verification from a rubber stamp:
+**What that means for the claims, without spin:** Gate 3 proves odds-validated
+issuance — a policy priced from a signed odds packet the chain re-verified.
+Gate 6 proves proof-gated settlement — coverage released only against a verified
+Merkle proof of the real result. Both are real capital in real escrow on devnet.
+Neither is used to imply the other. The Gate 6 policy's premium is computed by
+`server/pricing.mjs` from fixture 18257739's real recorded closing book
+(message `1838539384:00003:000503-10021-stab`, prices `[17400, 1067, 180000]`,
+57,458 ppm), so the figure is reproducible — but it is a broker-side price, not
+one the chain re-derived from a validated odds receipt.
 
-| payload | result |
+### Verified: the proof is genuinely verified, not rubber-stamped
+
+`scripts/gate6-tamper-negative.mjs` — 8/8 against devnet. The test turns on the
+rejections being *different*, because "it failed" alone cannot distinguish real
+verification from a rubber stamp. Run against the original Gate 3 policy, whose
+predicate (WIN_HOME on 18257865) is false because that match finished 4–6:
+
+| payload | on-chain result |
 |---|---|
-| authentic proof (fixture 18257865, seq 1195, P1 4 : P2 6) | TxLINE CPI runs to completion and returns a verdict → SURETY reports `TxlinePredicateRejected` (6031). **Reaching 6031 at all proves the proof verified.** |
+| authentic proof | TxLINE CPI runs to completion and returns a verdict → SURETY reports `TxlinePredicateRejected` (6031). **Reaching 6031 at all proves the proof verified.** |
 | one bit flipped in `mainTreeProof[0].hash` | rejected **inside** the TxLINE CPI with `InvalidMainTreeProof`, before any predicate was evaluated |
 | proved stat value forged (England 6 → 0) | rejected with `InvalidStatProof` — a forged scoreline does not buy a payout |
 
-Verified live: `dailyScoresRoot` PDA `C9vY83pzub2a4d3Qve5NuR4cuXc8Yq68fKRRad4xR4bi`
-present on devnet, owned by TxLINE program `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J`,
-9232 bytes. Full-time proof fetched live from the authenticated TxLINE API at run
-time (seq 1195, `game_finalised`), period 100, stat keys 1 and 2.
+This is also the disclosed negative result for the Gate 3 policy: it insures
+`WIN_HOME` on a match that finished `WIN_AWAY`, so it correctly receives nothing.
+It remains Open until `expire_policy` becomes callable at its `expires_at`,
+**2026-08-16T23:15:54Z**; simulation confirms the only obstacle is the clock.
 
-### Verified: the payload shape is correct
+### Payload shape
 
-`settle_policy` consumed 222,156 compute units and reached predicate evaluation,
-which is only possible if `StatValidationInput` serialized exactly as the program
-expects. Two field names differ from TxLINE's JSON and would have failed silently:
-`payload.fixtureProof` is fed from the proof's `subTreeProof`, and
-`summary.eventsSubTreeRoot` is TxLINE's `eventStatsSubTreeRoot`.
-
-### Not verified, and why
-
-**No settlement state transition has occurred.** The bound Gate 3 policy insures
-`WIN_HOME` on fixture 18257865, which finished 4–6 — `WIN_AWAY`. The insured
-outcome did not occur, so:
-
-- `settle_policy` cannot close it. It is the payout path, and there is no payout
-  to make. This is correct program behaviour, not a defect.
-- `expire_policy` cannot close it yet. The policy's `expires_at` is
-  **2026-08-16T23:15:54Z**, 22.1 days after this run. Simulation confirms the
-  only obstacle is the clock: accounts resolve, caller is funded, and the
-  program returns `PolicyNotExpired` (6022).
-
-**The payout path cannot currently be demonstrated end-to-end.** Doing so needs a
-policy whose predicate comes true, and issuance requires odds fresh within the
-on-chain 15-minute window — so a policy can only be bound against a fixture the
-feed is actively pricing. Checked live: the TxLINE dev snapshot carries 9
-fixtures, none earlier than 2026-09-23, and **none of them is being served a
-canonical full-match 1X2 packet yet**. Nothing can be bound today. The dev feed
-begins streaming 1X2 odds near kickoff, as observed during both World Cup
-captures.
+`StatValidationInput` serialized correctly — 222,156 CU consumed reaching
+predicate evaluation, impossible otherwise. Two field names differ from TxLINE's
+JSON and would have failed silently: `payload.fixtureProof` is fed from the
+proof's `subTreeProof`, and `summary.eventsSubTreeRoot` is TxLINE's
+`eventStatsSubTreeRoot`.
 
 ### Self-audit
 
-1. Network cut: every step hits live TxLINE and devnet and fails closed. The
-   settle script exits non-zero with a diagnosis rather than reporting success.
-2. Corrupt input: covered above — tampered tree proof and forged stat value are
-   both rejected on-chain, with different errors than an authentic proof.
+1. Network cut: every step hits live TxLINE and devnet and fails closed. Observed
+   the settle script exit non-zero with a diagnosis on the false-predicate policy
+   rather than fabricate a settlement.
+2. Corrupt input: tampered tree proof and forged stat value are both rejected
+   on-chain, with different errors than an authentic proof.
 3. Escape-hatch grep: no mock, demo flag, hardcoded outcome, or success-
-   fabricating catch. The catches in `gate6-tamper-negative.mjs` assert on-chain
-   rejections for the negative tests and read the real error code rather than
-   asserting "should have failed".
-4. Claim-to-code: every claim above is printed by `npm run verify:gate6` or
-   `npm run settle:gate6`, both of which refetch from chain.
-5. Fresh state: both scripts simulate by default and write nothing. A real send
-   requires `GATE6_CONFIRM=yes` set explicitly.
+   fabricating catch. The catches in the negative test assert on-chain rejections
+   and read the real error code rather than asserting "should have failed".
+4. Claim-to-code: every figure is printed by a script that refetches from chain;
+   `gate6-verify-settlement.mjs` does not trust the settling script's output.
+5. Fresh state: both write-capable scripts simulate by default and require
+   `GATE6_CONFIRM=yes`. The second vault and its policy are reproducible from
+   `gate6-create-settlement-vault.mjs` and `gate6-issue-policy-direct.mjs`.
