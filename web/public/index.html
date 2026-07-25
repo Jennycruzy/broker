@@ -1,68 +1,165 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BROKER — Agent-Native Insurance</title>
+  <meta name="description" content="BROKER is programmable match disruption cover for World Cup fans and their AI agents." />
+  <title>BROKER — Match cover, settled by proof</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
-<body class="viz-root">
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="mark">B</div>
-        <div class="brand-txt">
-          <h1>BROKER</h1>
-          <p>An AI agent that buys insurance for itself.</p>
+<body>
+  <nav class="nav shell" aria-label="Primary navigation">
+    <a class="wordmark" href="#top" aria-label="BROKER home">
+      <span class="mark">B</span><span>BROKER</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#proof">Proof dashboard</a>
+      <a class="nav-cta" href="#proof">View verified demo <span>↘</span></a>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> World Cup match protection</div>
+        <h1>The match changed.<br><em>Your plans did not.</em></h1>
+        <p class="hero-lede">BROKER gives fans and AI agents programmable cover for match outcomes—priced from signed odds, paid in USDC, and settled from proof instead of paperwork.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#proof">Explore verified proof</a>
+          <a class="button text-button" href="#how">See how it works <span>↓</span></a>
+        </div>
+        <div class="trust-row" aria-label="Technology integrations">
+          <span>Built with</span>
+          <b>Injective x402</b><i></i><b>USDC CCTP</b><i></i><b>MCP</b><i></i><b>Agent Skills</b>
         </div>
       </div>
-      <div class="topright">
-        <div class="live-pill" id="feedPill"><span class="dot"></span><span id="feedTxt">connecting…</span></div>
-        <div class="chips">
-          <span class="chip">x402</span><span class="chip">CCTP</span>
-          <span class="chip">MCP Server</span><span class="chip">Agent Skills</span>
+      <div class="hero-visual" aria-label="Example BROKER policy">
+        <div class="ticket">
+          <div class="ticket-top">
+            <span class="ticket-brand">BRK / 001826</span>
+            <span class="ticket-state"><i></i> ON-CHAIN</span>
+          </div>
+          <div class="ticket-label">MATCH COVER</div>
+          <div class="ticket-match">
+            <div><span>🇫🇷</span><b>France</b></div>
+            <strong>vs</strong>
+            <div><span>🏴</span><b>England</b></div>
+          </div>
+          <div class="ticket-rule">
+            <span>Covered condition</span>
+            <b>France to win</b>
+          </div>
+          <div class="ticket-values">
+            <div><small>PROTECTION</small><strong>5.00 <sup>USDC</sup></strong></div>
+            <div><small>PRICE SOURCE</small><strong>TxLINE <sup>signed</sup></strong></div>
+          </div>
+          <div class="ticket-foot">
+            <span>Proof, not promises.</span>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="orbit orbit-a">x402 <span>paid</span></div>
+        <div class="orbit orbit-b">CCTP <span>routed</span></div>
+        <div class="orbit orbit-c">SURETY <span>secured</span></div>
+      </div>
+    </section>
+
+    <section class="problem">
+      <div class="shell problem-grid">
+        <div class="section-kicker">THE PAIN POINT</div>
+        <h2>Fans make expensive plans around uncertain matches.</h2>
+        <p>Tickets, travel and watch parties depend on results, but ordinary insurance is slow, opaque and built around manual claims. BROKER turns a match condition into transparent cover an agent can quote, buy and verify.</p>
+        <div class="problem-stat"><strong>0</strong><span>manual claim forms</span></div>
+      </div>
+    </section>
+
+    <section class="how shell" id="how">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">FROM REQUEST TO RECEIPT</div>
+          <h2>One cover. Three clear moments.</h2>
+        </div>
+        <p>The interface stays simple. Underneath, BROKER coordinates payment, cross-chain routing, signed sports data and on-chain underwriting.</p>
+      </div>
+      <div class="steps">
+        <article class="step-card">
+          <span class="step-no">01</span>
+          <div class="step-icon">⌁</div>
+          <h3>Ask for cover</h3>
+          <p>A fan or AI agent chooses a fixture, outcome and protection amount through BROKER or its MCP tools.</p>
+          <small>MCP SERVER · AGENT SKILL</small>
+        </article>
+        <article class="step-card feature">
+          <span class="step-no">02</span>
+          <div class="step-icon">↗</div>
+          <h3>Pay and issue</h3>
+          <p>Signed odds determine the terms. The premium is paid using x402 and USDC is routed cross-chain through CCTP.</p>
+          <small>INJECTIVE x402 · USDC CCTP</small>
+        </article>
+        <article class="step-card">
+          <span class="step-no">03</span>
+          <div class="step-icon">✓</div>
+          <h3>Settle from proof</h3>
+          <p>SURETY locks the cover. A proof-verified match result decides the policy without a manual claims desk.</p>
+          <small>TxLINE · SURETY · SOLANA</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="ownership">
+      <div class="shell ownership-grid">
+        <div>
+          <div class="section-kicker light">WHAT BROKER OWNS</div>
+          <h2>The desk between an agent and the underwriting rails.</h2>
+        </div>
+        <div class="ownership-copy">
+          <p><b>BROKER</b> is the product: quoting, x402 payment, CCTP routing, MCP tools and lifecycle orchestration.</p>
+          <p><b>SURETY</b> is integrated underwriting infrastructure. It locks capital and enforces payouts. <b>TxLINE</b> supplies signed odds and result proofs.</p>
+        </div>
+        <div class="rail" aria-label="BROKER architecture">
+          <span>FAN / AGENT</span><i>→</i><strong>BROKER</strong><i>→</i><span>CCTP</span><i>→</i><span>SURETY</span>
+          <small>TxLINE proof ↗</small>
         </div>
       </div>
-    </header>
-
-    <p class="lede"><strong>BROKER is the agent-facing insurance desk.</strong> It gives an agent MCP tools to request coverage, collects the premium over x402 on Injective, routes USDC through CCTP, and coordinates an on-chain policy. This demo replays the exact signed World Cup packets captured during the tournament and reads the resulting policy directly from Solana devnet.</p>
-
-    <section class="stack" aria-label="BROKER architecture">
-      <div class="stack-title">
-        <span>What BROKER built</span>
-        <small>SURETY and TxLINE are integrated infrastructure, not the product UI.</small>
-      </div>
-      <div class="flow">
-        <div class="flow-step broker-step"><b>AI AGENT</b><span>asks BROKER to hedge exposure</span></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step broker-step"><b>BROKER</b><span>MCP · quote · x402 payment · orchestration</span></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step broker-step"><b>CCTP</b><span>moves premium to Solana</span></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step infra-step"><b>SURETY</b><span>locks capital and enforces payout</span></div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step infra-step"><b>TxLINE</b><span>supplies signed odds and result proofs</span></div>
-      </div>
-      <p class="stack-note"><b>Simple version:</b> SURETY is the underwriting ledger. BROKER is the broker, payment rail, and agent workflow built on top of it.</p>
     </section>
 
-    <section class="matches" id="matches">
-      <!-- match cards injected here -->
-      <div class="card skeleton"></div>
-      <div class="card skeleton"></div>
+    <section class="dashboard-section" id="proof">
+      <div class="shell">
+        <div class="dashboard-heading">
+          <div>
+            <div class="section-kicker">VERIFIED DEMO</div>
+            <h2>Inspect the evidence.</h2>
+            <p>These fixtures have concluded. The board re-verifies signed packets captured during the tournament and reads policy state from Solana devnet. Historical odds are never presented as fresh or bindable.</p>
+          </div>
+          <div class="live-pill" id="feedPill"><span class="dot"></span><span id="feedTxt">connecting…</span></div>
+        </div>
+
+        <div class="disclosure">
+          <b>Why replay?</b>
+          <span>The live feed only retains upcoming fixtures. Completed World Cup packets are replayed with their original proofs; the 15-minute freshness rule prevents them from issuing new policies.</span>
+        </div>
+
+        <section class="matches" id="matches" aria-label="Covered fixtures">
+          <div class="card skeleton"></div>
+          <div class="card skeleton"></div>
+        </section>
+        <section class="policy" id="policy" aria-label="Policy receipt"></section>
+        <section class="settlement-receipt" id="settlement" aria-label="Settlement receipt"></section>
+      </div>
     </section>
+  </main>
 
-    <section class="policy" id="policy"><!-- bound policy injected --></section>
-    <section class="settlement-receipt" id="settlement"><!-- settlement receipt injected --></section>
-
-    <footer class="foot">
-      <span><strong>BROKER</strong>: agent tools, payment, cross-chain routing and orchestration.</span>
-      <span><strong>SURETY</strong>: integrated Solana underwriting and settlement program.</span>
-      <span><strong>TxLINE</strong>: integrated signed odds and result proofs.</span>
-      <span>Injective <strong>testnet</strong> · Solana <strong>devnet</strong> · no mainnet claims.</span>
-      <span id="asOf"></span>
-    </footer>
-  </div>
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="wordmark footer-mark"><span class="mark">B</span><span>BROKER</span></div>
+      <p>Programmable match cover for fans and agents.<br>Proof, not paperwork.</p>
+      <div class="footer-meta">
+        <span>Injective testnet · Solana devnet</span>
+        <span>No mainnet claims · <span id="asOf"></span></span>
+      </div>
+    </div>
+  </footer>
   <script src="/app.js"></script>
 </body>
 </html>
