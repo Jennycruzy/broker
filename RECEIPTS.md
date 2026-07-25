@@ -31,6 +31,10 @@ All transactions use Injective testnet or Solana devnet.
   <https://explorer.solana.com/address/9APDuVP895jBhj6u3iZbdr65difkiCW6vDtfMrAfx58L?cluster=devnet>
 - Coverage: 5 USDC.
 - Premium: 4.241692 USDC.
+- Solana devnet has pruned the historical issuance transaction from public RPC
+  history. Its signature is retained above as the original receipt. The policy
+  account remains available and the dashboard decodes its current state
+  directly from chain.
 
 ## Proof-gated settlement
 
