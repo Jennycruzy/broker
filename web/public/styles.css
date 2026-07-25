@@ -176,6 +176,11 @@ body {
 .vaultline { margin-top: 16px; font-size: 12px; color: var(--text-muted); font-family: var(--mono); }
 .vaultline b { color: var(--text-secondary); }
 .infra-label { color: var(--accent); font-family: var(--font); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.lifecycle-note {
+  margin-top: 15px; padding: 12px 14px; color: var(--text-secondary); font-size: 12px;
+  border-radius: 10px; border: 1px solid rgba(250,178,25,.25); background: rgba(250,178,25,.06);
+}
+.lifecycle-note b { color: #fff; }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 @media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); } }
 .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
@@ -189,6 +194,23 @@ body {
 }
 .plinks a:hover { color: #fff; border-color: var(--accent); }
 .plinks a::after { content: "↗"; color: var(--text-muted); font-size: 11px; }
+
+.settlement-receipt { margin-top: 18px; }
+.settlement-card {
+  padding: 21px 23px; display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  border: 1px solid rgba(57,135,229,.35); border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(57,135,229,.12), var(--surface-1));
+}
+.receipt-kicker { color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+.settlement-card h3 { margin: 5px 0 5px; font-size: 16px; }
+.settlement-card p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+.settlement-card small { display: block; margin-top: 8px; color: var(--text-muted); }
+.settlement-links { display: flex; flex-direction: column; gap: 8px; flex: none; }
+.settlement-links a { color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
+@media (max-width: 780px) {
+  .settlement-card { display: block; }
+  .settlement-links { margin-top: 14px; }
+}
 
 .foot { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 .foot strong { color: var(--text-secondary); }

@@ -101,6 +101,9 @@ function policyPanel(p, vault) {
   const vaultLine = vault
     ? `<div class="vaultline"><span class="infra-label">UNDERWRITING INFRASTRUCTURE · SURETY</span><br>Vault ${esc(vault.address.slice(0, 8))}… · capital <b>${fmtUsdc(vault.totalCapitalUsdc)}</b> USDC · free <b>${fmtUsdc(vault.freeReservesUsdc)}</b> · locked <b>${fmtUsdc(vault.lockedLiabilitiesUsdc)}</b> · ${vault.policyCount} ${vault.policyCount === 1 ? "policy" : "policies"} written</div>`
     : "";
+  const lifecycleNote = p.status === "Open"
+    ? `<div class="lifecycle-note"><b>Why this is still open:</b> this policy insured WIN_HOME, but France lost 4–6. SURETY correctly made no payout. Its 5 USDC remains escrowed until the policy's on-chain expiry path becomes available.</div>`
+    : "";
 
   return `<div class="pcard">
     <div class="p-top">
@@ -114,11 +117,29 @@ function policyPanel(p, vault) {
       ${escrowLine}
     </div>
     ${vaultLine}
+    ${lifecycleNote}
     <div class="plinks">
       <a href="${p.links.x402Tx}" target="_blank" rel="noopener">BROKER x402 payment</a>
       <a href="${p.links.cctpMint}" target="_blank" rel="noopener">BROKER CCTP route</a>
       <a href="${p.links.issueTx}" target="_blank" rel="noopener">SURETY issuance tx</a>
       <a href="${p.links.policy}" target="_blank" rel="noopener">On-chain policy</a>
+    </div>
+  </div>`;
+}
+
+function settlementPanel(s) {
+  if (!s) return "";
+  const drained = s.escrowUsdc === null || s.escrowUsdc === 0;
+  return `<div class="settlement-card">
+    <div>
+      <div class="receipt-kicker">PROOF-GATED PAYOUT · SEPARATE SETTLEMENT RECEIPT</div>
+      <h3>TxLINE result verified → SURETY released ${fmtUsdc(s.coverageUsdc)} USDC</h3>
+      <p>This policy reached <b>${esc(s.status)}</b>. Its escrow is ${drained ? "<b>drained</b>" : `<b>${fmtUsdc(s.escrowUsdc)} USDC</b>`}, proving the payout path completed on Solana devnet.</p>
+      <small>This receipt proves settlement. It is separate from the odds-validated open policy above; the historical legs are not presented as one continuous policy.</small>
+    </div>
+    <div class="settlement-links">
+      <a href="${s.transactionExplorer}" target="_blank" rel="noopener">Settlement transaction ↗</a>
+      <a href="${s.policyExplorer}" target="_blank" rel="noopener">Triggered policy ↗</a>
     </div>
   </div>`;
 }
@@ -145,6 +166,9 @@ async function tick() {
     document.getElementById("policy").innerHTML = data.policy
       ? policyPanel(data.policy, data.vault)
       : policyError(data.onchainError ?? "unknown error");
+    document.getElementById("settlement").innerHTML = data.settlement
+      ? settlementPanel(data.settlement)
+      : policyError(data.settlementError ?? "settlement receipt unavailable");
     const [cls, txt] = feedState(data.fixtures);
     pill.className = "live-pill " + cls;
     pillTxt.textContent = txt;

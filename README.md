@@ -190,6 +190,12 @@ reads. Host it on a VPS behind Nginx or Caddy rather than uploading
 For a fast public demo, the checked-in `render.yaml` deploys both the dashboard
 and `/api/live` as one Render Web Service.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FJennycruzy%2Fbroker)
+
+The `onrender.com` URL is created only after approving this deployment in a
+Render account. When the service becomes **Live**, copy the URL displayed under
+the `broker-dashboard` service name.
+
 For recording narration and the exact SURETY/BROKER distinction, see
 [docs/DEMO_SCRIPT.md](./docs/DEMO_SCRIPT.md).
 

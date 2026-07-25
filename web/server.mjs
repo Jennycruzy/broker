@@ -50,6 +50,8 @@ const POLICY_LINKS = {
   x402Tx: "https://testnet.blockscout.injective.network/tx/0xd1901dd31772ce78d1f43962d0fb28792df3d54479e96270825340361504fa6a",
   cctpMint: "https://explorer.solana.com/tx/2UNhcfhpuyW1RFHgv81hM9GkC9GRQgvCSUg5dFddonHtuYLZM3FMtd9YgwacaptzmPkVZ65YPptNTrBsNRvnzyHj?cluster=devnet",
 };
+const SETTLED_POLICY_ACCOUNT = process.env.BROKER_SETTLED_POLICY ?? "Gmk1L8ZLPySzuGKsjNyxSyRcYMNzkb8QypzBxxzoFeMG";
+const SETTLEMENT_TX = "2SZFA2gaskxaNLjHy34Z3XomRN93i2zY3nbiQgWQaLizTUwmDDeLREvP2Bquih4JZXyYAmHpmfxLHUWBCVcK7qDg";
 
 const SAMPLE_COVERAGE = 5_000_000n; // 5 USDC — the coverage the live policy carries
 const usdc = (units) => Number(units) / 1e6;
@@ -209,12 +211,31 @@ async function policyPayload() {
   };
 }
 
+async function settlementPayload() {
+  const policy = await readPolicy(chain, SETTLED_POLICY_ACCOUNT);
+  return {
+    account: policy.address,
+    status: policy.status,
+    coverageUsdc: usdc(policy.coverage),
+    escrowUsdc: policy.escrowBalance === null ? null : usdc(policy.escrowBalance),
+    policyExplorer: `https://explorer.solana.com/address/${policy.address}?cluster=devnet`,
+    transactionExplorer: `https://explorer.solana.com/tx/${SETTLEMENT_TX}?cluster=devnet`,
+    transaction: SETTLEMENT_TX,
+  };
+}
+
 async function livePayload() {
   let onchain = null, onchainError = null;
+  let settlement = null, settlementError = null;
   try {
     onchain = await policyPayload();
   } catch (error) {
     onchainError = error.message;
+  }
+  try {
+    settlement = await settlementPayload();
+  } catch (error) {
+    settlementError = error.message;
   }
 
   const fixtures = [];
@@ -232,6 +253,8 @@ async function livePayload() {
     policy: onchain?.policy ?? null,
     vault: onchain?.vault ?? null,
     onchainError,
+    settlement,
+    settlementError,
   };
 }
 
